@@ -1,0 +1,14 @@
+{
+ "skimage.disk": {
+  "pairs": 780,
+  "violations": 571,
+  "frac": 0.732051282051282,
+  "consecutive_violations": 30
+ },
+ "OpenCV ellipse": {
+  "pairs": 780,
+  "violations": 628,
+  "frac": 0.8051282051282052,
+  "consecutive_violations": 36
+ }
+}

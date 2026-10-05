@@ -1,0 +1,15 @@
+# dataset (download instructions in README)
+data/
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+# LaTeX build files (PDFs are kept)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz

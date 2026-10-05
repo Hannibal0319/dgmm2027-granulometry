@@ -1,0 +1,19 @@
+{
+ "N4 (diamonds)": 0.20710678118654746,
+ "N8 (squares)": 0.20710678118654746,
+ "N4+N8 (octagons, neighbourhood seq.)": 0.04119610014619701,
+ "8-conn DSS, |v|<=1.00 (1 orbits)": 0.20710678118654752,
+ "segments/periodic lines, |v|<=1.00": 0.20710678118654757,
+ "8-conn DSS, |v|<=1.41 (2 orbits)": 0.04119610014619707,
+ "segments/periodic lines, |v|<=1.41": 0.041196100146196984,
+ "8-conn DSS, |v|<=2.24 (3 orbits)": 0.017614506682918456,
+ "segments/periodic lines, |v|<=2.24": 0.013732620650347964,
+ "8-conn DSS, |v|<=3.16 (4 orbits)": 0.013732620650348021,
+ "segments/periodic lines, |v|<=3.16": 0.006536000952715351,
+ "8-conn DSS, |v|<=5.00 (7 orbits)": 0.007772284206225704,
+ "segments/periodic lines, |v|<=5.00": 0.0037684073934740048,
+ "8-conn DSS, |v|<=10.00 (25 orbits)": 0.0028354060486443285,
+ "segments/periodic lines, |v|<=10.00": 0.0007639117603901735,
+ "8-conn DSS, |v|<=20.00 (97 orbits)": 0.0006568874513873317,
+ "segments/periodic lines, |v|<=20.00": 0.00017146196706085628
+}

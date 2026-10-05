@@ -1,0 +1,183 @@
+\documentclass[runningheads]{llncs}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\A}{\operatorname{A}}
+\newcommand{\dH}{d_H}
+
+\begin{document}
+\title{How Round Can a Digital Granulometry Be?}
+\titlerunning{How Round Can a Digital Granulometry Be?}
+\author{Anonymous Author(s)}
+\authorrunning{Anonymous}
+\institute{Anonymous Institution}
+\maketitle
+
+\begin{abstract}
+Granulometries by disks are the standard morphological tool for measuring size distributions, but on $\Z^2$ two of their requirements conflict: the structuring elements should look like Euclidean disks, and they should satisfy Matheron's absorption axiom, i.e.\ each disk must be open with respect to every smaller one. We first show that the digital disks provided by common libraries violate the axiom for most pairs of radii, including most consecutive radii. Families that satisfy it are classically built as Minkowski chains of small structuring elements (neighbourhood sequences, periodic lines, Bresenham decompositions), and they are visibly polygonal. We prove that this is unavoidable: if every element of a Minkowski chain with bounded radius steps lies within Hausdorff distance $\varepsilon$ of a Euclidean disk, then $\varepsilon$ grows at least like $\rho^{1/3}$ with the radius $\rho$, and linearly when the elementary structuring elements come from a fixed finite library. The proof combines the additivity of width functions with an elementary gap property of lattice directions. We complement the bound with constructions: a real-valued relaxation achieves bounded error, which isolates integrality as the obstruction; and integer chains computed by mixed-integer programming, with one element per radius, halve the error of octagons at practical radii. We conclude with experiments on the rotation invariance of granulometric size distributions.
+\keywords{Granulometry \and Digital disk \and Minkowski sum \and Lattice polygon \and Width function \and Pattern spectrum}
+\end{abstract}
+
+%===============================================================================
+\section{Introduction}
+Granulometries, introduced by Matheron~\cite{matheron1975}, formalise sieving: a family of openings $(\gamma_\lambda)_{\lambda\ge0}$ that are decreasing in $\lambda$ and satisfy the absorption law $\gamma_\lambda\gamma_\mu=\gamma_\mu\gamma_\lambda=\gamma_{\max(\lambda,\mu)}$. The size distribution and pattern spectrum derived from them~\cite{maragos1989,serra1982,soille2003} are among the most widely used morphological descriptors. For openings by structuring elements $B_\lambda$, absorption holds if and only if $B_\mu$ is $B_\lambda$-open, i.e.\ a union of translates of $B_\lambda$, for all $\lambda\le\mu$. In $\R^2$ the family of Euclidean disks satisfies this condition, and it is the canonical isotropic granulometry.
+
+On the grid $\Z^2$ the situation is different. The digital disks $\{p\in\Z^2:\|p\|\le r\}$ used by common software are not open with respect to each other in general (Sect.~\ref{sec:violation}): with \texttt{scikit-image}~\cite{vanderwalt2014}, \textbf{73\%} of the pairs of radii up to $40$ violate the condition, as do \textbf{30 out of 39} consecutive pairs. The resulting ``disk granulometries'' are therefore not granulometries. The classical remedy~\cite{adams1993,jones1996,soille2003,vincent1994} is to build structuring elements as \emph{Minkowski chains} $D_k=D_{k-1}\oplus C_k$. Such a family is automatically granulometric, because $D\oplus C$ is $D$-open. The elementary sets $C_k$ come from a small library: the $4$- and $8$-neighbourhoods give octagons (neighbourhood sequences~\cite{rosenfeld1968,farkas2006}), periodic lines~\cite{jones1996}, or Bresenham segments~\cite{adams1993}. These families are polygonal, and their deviation from the disk grows with the radius.
+
+This paper asks how round a granulometric family of digital disks can be, and gives the following answers.
+\begin{itemize}
+\item \textbf{Lower bound} (Theorem~\ref{thm:lower}). If every element of a Minkowski chain with radius steps at most $\Delta$ is within Hausdorff distance $\varepsilon$ of a Euclidean disk, then $\varepsilon\ge c\,\rho^{1/3}$ at radius $\rho$. With a fixed finite library the error is linear in $\rho$, with an explicit constant computed by linear programming (Corollary~\ref{cor:library}). The proof relies on the additivity of width functions and on a gap in the set of short lattice directions.
+\item \textbf{Integrality is the obstruction.} When the multiplicities of the elementary sets may be real, a monotone family with bounded error exists up to the radii we tested (Sect.~\ref{sec:constructions}).
+\item \textbf{Constructions.} Mixed-integer programming yields chains with one element per radius whose error is about half that of octagons at practical radii. The solver also certifies that octagons are optimal among $D_4$-symmetric chains for $r\le24$.
+\item \textbf{Experiments.} Size distributions computed with granulometric families are monotone by construction, and rounder families make them more rotation invariant (Sect.~\ref{sec:experiments}).
+\end{itemize}
+Related work on approximating circles by neighbourhood sequences~\cite{farkas2006} or spheres by zonohedra~\cite{jensen2019} optimises roundness for a fixed library, and Soille and Talbot~\cite{soille2001} noted that radial decompositions by Bresenham lines do not generate granulometries. Our lower bound explains why no choice of library can resolve the conflict.
+
+%===============================================================================
+\section{Preliminaries}\label{sec:prelim}
+For a finite set $X\subset\Z^2$ and a unit vector $u_\theta=(\cos\theta,\sin\theta)$, the support function is $h_X(\theta)=\max_{p\in X}\langle p,u_\theta\rangle$ and the \emph{width function} is $w_X(\theta)=h_X(\theta)+h_X(\theta+\pi)$, the width of $\conv X$ in direction $u_\theta$. It is translation invariant and $\pi$-periodic, and the diameter of $\conv X$ equals $\max_\theta w_X$. Support functions, hence width functions, are additive under Minkowski addition~\cite{schneider2014}:
+\begin{equation}\label{eq:additive}
+w_{X\oplus Y}=w_X+w_Y .
+\end{equation}
+The \emph{anisotropy} of $X$ is $\A(X)=\max_\theta w_X(\theta)-\min_\theta w_X(\theta)$. We say that $X$ is \emph{$\varepsilon$-round with radius $\rho$} if $\dH(\conv X,B(c,\rho))\le\varepsilon$ for some centre $c$. Then $|h_X(\theta)-\langle c,u_\theta\rangle-\rho|\le\varepsilon$, hence
+\begin{equation}\label{eq:round}
+2\rho-2\varepsilon\le w_X\le2\rho+2\varepsilon\quad\text{and}\quad \A(X)\le4\varepsilon .
+\end{equation}
+
+The opening of $Y\subseteq\Z^2$ by a structuring element $D$ is $Y\circ D=\bigcup\{D+t: D+t\subseteq Y\}$. A family of structuring elements $(D_k)$ generates a granulometry if and only if $D_l\circ D_k=D_l$ for all $k\le l$~\cite{matheron1975,serra1982}. Since this relation is transitive, it suffices to check consecutive elements. A \emph{Minkowski chain} is a family with $D_k=D_{k-1}\oplus C_k$ for finite sets $C_k$; every Minkowski chain is granulometric. When all $C_k$ belong to a finite set $\mathcal L$ (up to translation), we call $\mathcal L$ the \emph{library} of the chain.
+
+%===============================================================================
+\section{Digital Disks Are Not Granulometric}\label{sec:violation}
+We tested the condition ``$D_r$ is $D_s$-open'' for all pairs $1\le s<r\le40$, for the digital disks of \texttt{scikit-image}~\cite{vanderwalt2014} (\texttt{disk(r)}, the Gauss digitisation $\{p:\|p\|\le r\}$) and of OpenCV~\cite{bradski2000} (\texttt{MORPH\_ELLIPSE}). Table~\ref{tab:violation} reports the results. Most pairs violate the condition, including most \emph{consecutive} pairs, so neither family generates a granulometry.
+
+\begin{table}[t]
+\centering
+\caption{Violations of the absorption condition by standard digital disks, $1\le s<r\le40$.}\label{tab:violation}
+\begin{tabular}{lccc}
+\toprule
+ & violating & violating & images with non-\\
+family & pairs $(s,r)$ & pairs $(r-1,r)$ & monotone size distr.\\
+\midrule
+\texttt{scikit-image} \texttt{disk} & 571/780 (73\%) & 30/39 & 253/400\\
+OpenCV \texttt{MORPH\_ELLIPSE} & 628/780 (81\%) & 36/39 & --\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The consequence is not cosmetic. If $D_r$ is not $D_s$-open, then $X\circ D_r\not\subseteq X\circ D_s$ for some $X$, and the size distribution $r\mapsto|X\circ D_r|$ can \emph{increase}: the pattern spectrum then takes negative values. On random images made of $3$--$11$ disks, rectangles or digital disks ($120\times120$ pixels, $r\le15$), this happened for 253 of 400 images. For example, in one image the opened area grows from 2053 to 2089 pixels between $r=8$ and $r=9$. All three of \texttt{scipy.ndimage}, \texttt{scikit-image} and OpenCV agree, up to border conventions. In Sect.~\ref{sec:experiments} the same effect appears on rotated test scenes.
+
+One might hope to extract a granulometric \emph{subsequence} of digital disks. Over all origin-centred digital disks $\{p:\|p\|^2\le n\}$, $n\le900$, we computed the largest radius reachable by a chain of consecutively open disks whose radius gaps are at most $G$. It is $2.0$ for $G=1$, $9.9$ for $G=2$ and $21.8$ for $G=3$, and only with $G\ge5$ is radius $30$ reached. Granulometries made of digital disks are thus necessarily coarse.
+
+%===============================================================================
+\section{A Lower Bound for Minkowski Chains}\label{sec:lower}
+The key observation is that \eqref{eq:additive} turns roundness of every element of a chain into a constraint on the increments. If $D_{k-1}$ and $D_k$ are both nearly round, then $w_{C_k}=w_{D_k}-w_{D_{k-1}}$ is nearly constant, so $C_k$ has small diameter and all its edges are short lattice vectors. Short lattice vectors leave a gap of directions around each axis, and a polygon whose edges avoid an angular interval cannot be round.
+
+\begin{lemma}[direction gap]\label{lem:gap}
+Let $d\ge1$. No nonzero lattice vector $(a,b)$ with $a^2+b^2\le d^2$ has a direction angle in the open interval $(0,\arctan(1/d))$.
+\end{lemma}
+\begin{proof}
+A direction in that interval requires $a>0$ and $b\ge1$, hence $b/a\ge1/a\ge1/d$.\qed
+\end{proof}
+
+\begin{theorem}\label{thm:lower}
+Let $(D_k)_{k=0}^K$ be a Minkowski chain of finite subsets of $\Z^2$ such that each $D_k$ is $\varepsilon$-round with radius $\rho_k$, and $\rho_k-\rho_{k-1}\le\Delta$ for all $k$. Let $d=2\Delta+4\varepsilon$ and $\alpha=\arctan(1/d)$. Then
+\begin{equation}\label{eq:bound}
+8\varepsilon\ \ge\ 2\,(\rho_K-\rho_0-2\varepsilon)\,\bigl(1-\cos(\alpha/2)\bigr).
+\end{equation}
+Consequently, for fixed $\Delta$, $\varepsilon\ge(1-o(1))\,\bigl((\rho_K-\rho_0)/512\bigr)^{1/3}$ as $\rho_K\to\infty$.
+\end{theorem}
+\begin{proof}
+\emph{Step 1 (short increments).} By \eqref{eq:additive} and \eqref{eq:round}, $w_{C_k}=w_{D_k}-w_{D_{k-1}}\le(2\rho_k+2\varepsilon)-(2\rho_{k-1}-2\varepsilon)\le d$. Hence $\operatorname{diam}\conv C_k\le d$, and every edge of the lattice polygon $\conv C_k$ is a lattice vector of norm at most $d$.
+
+\emph{Step 2 (one polygon).} Let $P=\sum_{k=1}^K\conv C_k$ and $Q=\frac12(P-P)$. Then $W:=w_{D_K}-w_{D_0}=w_P=2h_Q$, and $Q$ is a centrally symmetric polygon whose edge directions are among those of the $\conv C_k$. By Lemma~\ref{lem:gap}, no edge direction of $Q$ lies in $(0,\alpha)$. The outer normals of consecutive edges of $Q$ therefore leave an interval $I$ of normal angles of length at least $\alpha$ on which a single vertex $q$ of $Q$ attains the support: $h_Q(\theta)=|q|\cos(\theta-\theta_q)$ for $\theta\in I$.
+
+\emph{Step 3 (anisotropy).} We may assume $\rho_K-\rho_0>2\varepsilon$, since otherwise \eqref{eq:bound} is trivial; then $h_Q>0$ and $|\theta-\theta_q|<\pi/2$ on $I$, and a cosine restricted to an interval of length $\alpha$ varies by at least $1-\cos(\alpha/2)$ times its amplitude. Moreover $|q|\ge\min h_Q=\frac12\min W\ge\rho_K-\rho_0-2\varepsilon$ by \eqref{eq:round}. Hence $\A(W):=\max W-\min W\ge2(\rho_K-\rho_0-2\varepsilon)(1-\cos(\alpha/2))$.
+
+\emph{Step 4.} Finally $\A(W)\le\A(D_K)+\A(D_0)\le8\varepsilon$ by \eqref{eq:round}, which gives \eqref{eq:bound}. For the asymptotic form, $1-\cos(\alpha/2)=\alpha^2/8+O(\alpha^4)$ and $\alpha=1/d+O(d^{-3})$. Since \eqref{eq:bound} forces $\varepsilon\to\infty$ as $\rho_K\to\infty$, we have $d=4\varepsilon(1+o(1))$, and \eqref{eq:bound} becomes $8\varepsilon\ge(\rho_K-\rho_0)/(64\,\varepsilon^2)\,(1+o(1))$.\qed
+\end{proof}
+
+The bound uses only the Minkowski structure and integrality: Step~1 is where lattice points enter. It holds for any centres, so the elements need not be concentric, and for any shape of the increments. It is tight in its mechanism: in the real-valued relaxation of Sect.~\ref{sec:constructions}, where Step~1 fails, bounded error appears achievable.
+
+\begin{corollary}[fixed library]\label{cor:library}
+Let $\mathcal L$ be a finite library containing at least one set with more than one point, and let
+\[
+\kappa(\mathcal L)=\min\Bigl\{\tfrac14\A\bigl(\textstyle\sum_{C\in\mathcal L}\lambda_C w_C\bigr)\ :\ \lambda\ge0,\ \min_\theta\textstyle\sum_C\lambda_Cw_C(\theta)=2\Bigr\}.
+\]
+Then $\kappa:=\kappa(\mathcal L)>0$, and every Minkowski chain with library $\mathcal L$ whose elements are $\varepsilon$-round satisfies $\varepsilon\ge\bigl(\kappa(\rho_K-\rho_0)-\frac14\A(D_0)\bigr)/(1+2\kappa)$, i.e.\ $\varepsilon\ge\frac{\kappa}{1+2\kappa}\rho_K-O(1)$.
+\end{corollary}
+\begin{proof}
+$\sum_C\lambda_Cw_C$ is the width function of the polygon $\sum_C\lambda_C\conv C$, which does not have constant width because bodies of constant width are strictly convex~\cite{schneider2014}. Restricted to the sets of more than one point, the feasible $\lambda$ can be normalised to a compact set on which the anisotropy is continuous and positive, so $\kappa>0$. Write $W=w_{D_K}-w_{D_0}=\sum_Cn_Cw_C$ with multiplicities $n_C$, and $s=\frac12\min W\ge\rho_K-\rho_0-2\varepsilon$ by \eqref{eq:round}. Then $W/s$ is feasible, so $\A(W)\ge4\kappa s$. Combining $\A(W)\le\A(D_K)+\A(D_0)\le4\varepsilon+\A(D_0)$ with $s\ge\rho_K-\rho_0-2\varepsilon$ gives the claim.\qed
+\end{proof}
+
+Computing $\kappa(\mathcal L)$ is a linear program on a fine grid of directions. Table~\ref{tab:kappa} lists it for classical libraries: octagons (neighbourhood sequences) lose about $4\%$ of the radius, and every finite library loses a fixed fraction. The corollary is tight for octagons: our best octagon chain has error $38.05$ at $\rho=1000$, matching the leading term $\frac{\kappa}{1+2\kappa}\rho=38.06$ up to the $O(1)$ correction.
+
+\begin{table}[t]
+\centering
+\caption{Slope $\kappa(\mathcal L)$ of Corollary~\ref{cor:library} for classical libraries: no Minkowski chain built from $\mathcal L$ is better than $\frac{\kappa}{1+2\kappa}\rho-O(1)$ round. $N_4$, $N_8$: $4$- and $8$-neighbourhoods. Segment libraries contain the $D_4$-images of the 8-connected digital straight segments (or of periodic lines~\cite{jones1996}, which have the width function of Euclidean segments) of all primitive vectors of norm $\le m$.}\label{tab:kappa}
+\begin{tabular}{lcc@{\qquad}lcc}
+\toprule
+library & $\kappa$ & $\kappa\cdot100$ & library & $\kappa$ & $\kappa\cdot100$\\
+\midrule
+$\{N_4\}$ or $\{N_8\}$ & 0.2071 & 20.7 & DSS, $m=\sqrt5$ & 0.0176 & 1.76\\
+$\{N_4,N_8\}$ (octagons) & 0.0412 & 4.12 & DSS, $m=5$ & 0.0078 & 0.78\\
+periodic lines, $m=\sqrt5$ & 0.0137 & 1.37 & DSS, $m=10$ & 0.0028 & 0.28\\
+periodic lines, $m=5$ & 0.0038 & 0.38 & DSS, $m=20$ & 0.0007 & 0.07\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two remarks. First, $\kappa(\{N_4\})=(\sqrt2-1)/2$ is the familiar anisotropy of the square. Second, enlarging the library lowers $\kappa$ only quadratically in $m$, as Lemma~\ref{lem:gap} predicts, while Theorem~\ref{thm:lower} shows that an unbounded library does not help either when the radius steps are bounded: the increments must then be short, which re-creates a finite effective library at every scale.
+
+%===============================================================================
+\section{Constructions}\label{sec:constructions}
+\paragraph{Elementary sets.} We build chains from 8-connected digital straight segments (DSS)~\cite{klette2004,reveilles1991}: for a primitive vector $v=(a,b)$, $a\ge b\ge0$, the set $\{(x,\lfloor bx/a+\frac12\rfloor):0\le x\le a\}$ (with symmetric rounding of ties), together with its images under the dihedral group $D_4$ of the grid. Each element always contains the $2\times2$ square, i.e.\ the sum of the horizontal and vertical unit segments.
+
+\paragraph{Hole-freeness.} A Minkowski sum of digital sets may have holes, i.e.\ lattice points of $\conv(A\oplus B)$ outside $A\oplus B$, even for very simple sets~\cite{murota2003,murota2023}. Results guaranteeing $(\conv A+\conv B)\cap\Z^2=A\oplus B$ require compatible normal fans~\cite{haase2008} or $M^\natural$-convexity~\cite{murota2003}, and neither applies here. Empirically, sums of two-point segments $\{0,v\}$ or of unimodular parallelograms have holes in most random trials, whereas sums of DSS that contain the $2\times2$ square were hole-free in all of our tests: 700 random chains with segments of norm up to $\sqrt{98}$, and every element used in this paper, which we checked exhaustively. Without the square, 8-connected segments occasionally create holes (67 of 400 trials), while 4-connected segments never did (1100 trials). Hence each element is exactly the set of lattice points of a lattice polygon, a sum of thin polygons, and all of its geometry is captured by support functions. We leave the general statement as a conjecture.
+
+\paragraph{The real relaxation has bounded error.} Replace the integer multiplicities $n_{k,g}$ of each segment orbit $g$ by real numbers $x_g(\rho)\ge0$ that are non-decreasing in $\rho$. Minimising $\max_\rho\sup_\theta|\sum_gx_g(\rho)h_g(\theta)-\rho|$ over a grid of radii is then a single linear program. Its optimum stays bounded: $0.26$ for $|v|\le20$ and $\rho\le400$, $0.34$ for $|v|\le32$ and $\rho\le1000$, and $0.43$ for $|v|\le45$ and $\rho\le2000$. The optimal real chains use few, long segments with \emph{fractional} multiplicities. These are precisely what Step~1 of Theorem~\ref{thm:lower} forbids: with integer multiplicities and unit radius steps, a long segment would add a long edge in one step. Integrality, not monotonicity, is the obstruction.
+
+\paragraph{Optimal integer chains.} For a target sequence of radii $r=1,\dots,R$, we compute chains by mixed-integer programming. The variables are the multiplicities $n_{r,g}\in\Z_{\ge0}$, non-decreasing in $r$, together with a centre $c_r$, a radius $\rho_r\in[r-\frac12,r+\frac12]$ and an error $t_r$ for each element, subject to $|h_{D_r}(\theta)-\langle c_r,u_\theta\rangle-\rho_r|\le t_r$ on 240 directions. We minimise $\max_rt_r$ plus a small multiple of its mean. A radius-by-radius solution with a look-ahead of three radii provides a warm start, and HiGHS~\cite{huangfu2018} improves it globally. Two findings stand out.
+(i) If increments must be whole $D_4$-orbits, so that every element is $D_4$-symmetric, the solver certifies for $r\le24$ and $|v|\le8$ that the optimum is attained by octagons. Symmetric increments are too coarse to do better at unit steps, in line with Step~1 of the proof.
+(ii) With individual segments as increments, the elements are no longer symmetric, and the error drops well below that of octagons. For $|v|\le6$ and radii $r=1,\dots,48$, we obtain a chain with one element per integer radius, all of them hole-free and consecutively open. Its maximum error is $0.61$ up to $r=24$ and $1.00$ up to $r=48$ (mean $0.57$), against $0.93$ and $1.85$ for the best octagon chain (Fig.~\ref{fig:error}a). A chain optimised for $r\le24$ only, with $|v|\le5$, reaches $0.50$, comparable to the $0.13$--$0.34$ of Gauss disks, which are not granulometric. The solver's dual bound for $r\le48$ ($0.32$) leaves room for improvement.
+
+\paragraph{Large radii.} For radii up to $1000$, exact optimisation is out of reach. Monotone integer rounding of the real relaxation, guided by a small MILP at each radius, gives chains whose error grows roughly like $\rho^{0.38}$ (Fig.~\ref{fig:error}b), compared with $0.041\rho$ for octagons. These chains, however, take radius steps of up to $39$, so they illustrate the gap to Theorem~\ref{thm:lower} rather than close it.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/error.pdf}
+\caption{Roundness error of granulometric chains. (a) Chains with one element per integer radius. (b) Large radii; our chain here takes coarse radius steps. Dashed and dotted lines: the lower bound \eqref{eq:bound} for the indicated step size. Gauss disks are not Minkowski chains, so the bound does not apply to them.}\label{fig:error}
+\end{figure}
+
+%===============================================================================
+\section{Experiments}\label{sec:experiments}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.62\textwidth]{figures/shapes.pdf}
+\caption{Elements of three families at radii 8, 16 and 24, with the best-fitting circle. Gauss digital disks (top) are round but not granulometric; octagons (middle) are granulometric but polygonal; our unit-step chain (bottom) is granulometric and nearly round.}\label{fig:shapes}
+\end{figure}
+
+\paragraph{Rotation invariance of size distributions.} An isotropic granulometry should measure the same size distribution for an object and its rotated copies. Our test scene $X_\theta$ contains nine squares of sides $17$ to $81$ pixels, rasterised exactly after rotation by $\theta\in\{0^\circ,3^\circ,\dots,45^\circ\}$. For each family we compute $F_\theta(r)=|X_\theta\circ D_r|/|X_\theta|$ for $r=1,\dots,40$, implementing openings by chain elements as cascades of erosions and dilations by their segments, which also makes them fast. We report the rotation sensitivity $S=\operatorname{mean}_r\operatorname{std}_\theta F_\theta(r)$ and the number of pairs $(\theta,r)$ with $F_\theta(r+1)>F_\theta(r)$. Such increases are impossible for a granulometry.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/rotation.pdf}
+\caption{Size distributions of the rotated test scene, one curve per angle. Gauss disks are nearly isotropic but non-monotone; octagons are monotone but orientation dependent; our chain is monotone and halves the orientation dependence of octagons.}\label{fig:rotation}
+\end{figure}
+
+Figure~\ref{fig:rotation} shows the results. Gauss disks are the least orientation dependent ($S=0.0038$) but produce 29 increases of the size distribution, i.e.\ negative pattern-spectrum values. Octagons are monotone but strongly orientation dependent ($S=0.0329$): the curves for $\theta=0^\circ$ and $\theta\approx22^\circ$ separate as soon as the squares stop containing the octagons in both orientations. Our chain is monotone and halves the orientation dependence ($S=0.0166$). Theorem~\ref{thm:lower} implies that no Minkowski chain can match Gauss disks at all radii, and these values are consistent with that.
+
+%===============================================================================
+\section{Conclusion}
+Digital disks as provided by standard libraries do not generate granulometries, and the classical granulometric replacements, Minkowski chains, cannot be uniformly round: their error grows at least like $\rho^{1/3}$, and linearly for any fixed library. The obstruction is integrality, since the real relaxation of the problem appears to admit bounded error. Between the $\rho^{1/3}$ lower bound and the growth of our best constructions lies an open problem: what is the optimal growth rate of the error of a granulometric Minkowski chain of digital disks? Granulometries that are not Minkowski chains, where $D_l$ is merely a union of translates of $D_k$, escape our argument; whether they can be uniformly round is a second open question. Extensions to $\Z^3$, where Lemma~\ref{lem:gap} has a direct analogue, are natural.
+
+\bibliographystyle{splncs04}
+\bibliography{refs}
+\end{document}
