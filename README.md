@@ -1,4 +1,4 @@
-# DGMM 2027 submission: "How Round Can a Digital Granulometry Be?"
+# DGMM 2027 submission: "Correct or Round? Granulometries by Digital Disks"
 
 Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages, EasyChair).
 
@@ -6,17 +6,15 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 - `granulo/` — all code and data for it (see table below).
 
 ## Main results
-1. Standard digital disks are not granulometric: scikit-image `disk` violates "D_r is D_s-open" for 73% of
-   pairs s<r<=40 (30/39 consecutive pairs), OpenCV ellipse for 81%; size distributions become non-monotone
-   (253/400 random images).
-2. **Theorem 1**: any Minkowski chain (octagons, periodic lines, Bresenham decompositions, ...) whose elements
-   are all eps-round with radius steps <= Delta has eps >= c rho^(1/3); with a fixed library eps grows linearly
-   (Corollary 2, slope kappa/(1+2kappa), tight for octagons).
-3. Constructions (radius steps < 2.2, r <= 48): LP-weighted periodic-line chains and MILP chains have max error ~1.0
-   vs 1.85 for octagons and 3.27 for Bresenham/DSS decompositions; up to r = 1000: 3.7 vs 38 (bound 0.47).
-   Real relaxation numerically bounded (0.43 up to r = 2000), not proven.
-4. Experiments: on rotated polygonal scenes the periodic chain is 3x less orientation dependent than octagons;
-   on three real images (nuclei, coins, gravel) all families are within resampling noise.
+1. Standard digital disks are not granulometric (scikit-image: 73% of radius pairs violate absorption, OpenCV 81%;
+   size distributions increase with r on ~60% of random images).
+2. Lower bound (Thm 1 + Cors): a Minkowski chain with mean-radius steps <= delta has error >= rho/(32 pi^2 delta^2)
+   (asymptotically) -> bounded steps force LINEAR anisotropy; fitted-radius steps -> rho^(1/3); fixed library ->
+   kappa (LP), tight for octagons.
+3. Matching upper bound (Thm 3): periodic lines on the boundary of [-m,m]^2 give eps <= rho/(8m^2) + 2m^2 with steps
+   <= sqrt2 m/pi -> optimal error Theta(rho/delta^2) (factor 8), Theta(sqrt rho) with delta ~ rho^(1/4).
+4. Z^n (Thm 2): eps >= c_n rho delta^(-2n).
+5. Experiments: practical families (Table 3), rotated synthetic + 3 real images (Table 4).
 
 ## Code (`granulo/`)
 | file | purpose |
@@ -35,6 +33,8 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `periodic_large.py` | LP-weighted periodic chains up to r = 1000 (Fig. 1b) |
 | `exp_rotation2.py` | Table 4: rotation experiment, synthetic + real images |
 | `fig_final.py` | final figures (error, shapes, rotation) |
+| `upper.py`, `upper_multi.py` | Theorem 3 construction: verification of bound, steps, gaps; multiscale O(sqrt rho) |
+| `fig_bounds.py` | Fig. 1 (practical families; upper/lower bound sandwich) |
 | `verify_chain.py` | hole-freeness / openness / per-radius error of a computed chain |
 | `fig_main.py` | all figures (`python fig_main.py fig_error fig_rotation fig_shapes fig_violations`) |
 | `NOTES_theory.md` | proof notes |
