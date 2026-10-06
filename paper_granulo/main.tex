@@ -16,34 +16,37 @@
 
 \emergencystretch=2em
 \begin{document}
-\title{Correct or Round? Granulometries by Digital Disks}
-\titlerunning{Correct or Round? Granulometries by Digital Disks}
+\title{Disk Granulometries on the Digital Grid:\\ Why a Single Structuring Element Is Not Enough}
+\titlerunning{Disk Granulometries on the Digital Grid}
 \author{Anonymous Author(s)}
 \authorrunning{Anonymous}
 \institute{Anonymous Institution}
 \maketitle
 
 \begin{abstract}
-Size distributions by disk openings are a standard tool, but on $\Z^2$ disk granulometries face a dilemma. The digital disks of common libraries are round, but they violate Matheron's absorption axiom for most pairs of radii, so the size distributions they produce can increase with the radius. The classical correct alternatives, Minkowski chains of small structuring elements such as octagons, periodic lines or Bresenham decompositions, are polygonal. We prove that this dilemma is unavoidable and determine its price. If the mean radius of a Minkowski chain grows by at most $\delta$ per element, every element of radius $\rho$ deviates from every disk by at least about $\rho/(16\pi^2\delta^2)$, so fine granulometric chains are linearly anisotropic, in any dimension. An explicit chain of periodic lines attains this rate within a factor of~4, and for a fixed library the exact slope, computed by linear programming, is attained by octagons. Experiments on synthetic and real images illustrate the violation of the axiom and the anisotropy of correct chains, and lead to practical recommendations.
+The usual way to measure size distributions is to open an image by the digital disks of increasing radius that common libraries provide. We show that this is not a granulometry: these disks violate Matheron's absorption axiom for most pairs of radii, and the resulting size distributions can increase with the radius. Two remedies exist. Replacing each opening by the union of openings by all larger disks yields a correct granulometry that is as round as the disks themselves and costs the same; we recommend it. Keeping a \emph{single} structuring element per size, as in octagons, periodic lines or Bresenham decompositions, forces polygonal shapes, and we prove that this is unavoidable. If the mean radius of a Minkowski chain grows by at most $\delta$ per element, every element of radius $\rho$ deviates from every disk by at least about $\rho/(16\pi^2\delta^2)$, in any dimension. An explicit chain of periodic lines attains this rate within a factor of 4, and for a fixed library the exact slope is attained by octagons. Experiments on synthetic and real images confirm the diagnosis, the remedy, and when the anisotropy of single-element families matters.
 \keywords{Granulometry \and Digital disk \and Minkowski sum \and Lattice polygon \and Width function \and Pattern spectrum}
 \end{abstract}
 
 %===============================================================================
 \section{Introduction}
-Granulometries, introduced by Matheron~\cite{matheron1975}, formalise sieving: a family of openings $(\gamma_\lambda)_{\lambda\ge0}$ that are decreasing in $\lambda$ and satisfy the absorption law $\gamma_\lambda\gamma_\mu=\gamma_\mu\gamma_\lambda=\gamma_{\max(\lambda,\mu)}$. The size distribution and pattern spectrum derived from them~\cite{maragos1989,serra1982,soille2003} are among the most widely used morphological descriptors. For openings by structuring elements $B_\lambda$, absorption holds if and only if $B_\mu$ is $B_\lambda$-open, i.e.\ a union of translates of $B_\lambda$, for all $\lambda\le\mu$. Euclidean disks satisfy this condition, and they form the canonical isotropic granulometry.
+Granulometries, introduced by Matheron~\cite{matheron1975}, formalise sieving: a family of openings $(\gamma_\lambda)_{\lambda\ge0}$ that are decreasing in $\lambda$ and satisfy the absorption law $\gamma_\lambda\gamma_\mu=\gamma_\mu\gamma_\lambda=\gamma_{\max(\lambda,\mu)}$. The size distribution and pattern spectrum derived from them~\cite{maragos1989,serra1982,soille2003} are among the most widely used morphological descriptors. The textbook construction uses a \emph{single structuring element per size}: $\gamma_\lambda(X)=X\circ B_\lambda$. Absorption then holds if and only if $B_\mu$ is $B_\lambda$-open, i.e.\ a union of translates of $B_\lambda$, for all $\lambda\le\mu$. Euclidean disks satisfy this condition.
 
-On the grid $\Z^2$, practitioners face a choice that is rarely made explicit. The digital disks $\{p\in\Z^2:\|p\|\le r\}$ of common software are round, but they are \emph{not} open with respect to each other (Sect.~\ref{sec:violation}). With \texttt{scikit-image}~\cite{vanderwalt2014}, $73\%$ of the pairs of radii up to $40$ violate the condition, and size distributions computed with these disks increase with the radius on most random test images. The classical remedy~\cite{adams1993,jones1996,soille2003,vincent1994} builds the structuring elements as \emph{Minkowski chains} $D_k=D_{k-1}\oplus C_k$, which are automatically granulometric. Their elementary sets $C_k$ come from small libraries: the $4$- and $8$-neighbourhoods give octagons (neighbourhood sequences~\cite{rosenfeld1968,farkas2006}), and there are also periodic lines~\cite{jones1996} and Bresenham segments~\cite{adams1993}. These families are correct but polygonal.
-
-We show that this trade-off is a theorem, and we determine its rate.
+On the grid $\Z^2$ they do not. The digital disks $\{p\in\Z^2:\|p\|\le r\}$ of common software are not open with respect to each other (Sect.~\ref{sec:violation}): with \texttt{scikit-image}~\cite{vanderwalt2014}, $73\%$ of the pairs of radii up to $40$ violate the condition. Size distributions computed as $r\mapsto|X\circ D_r|$, the most direct use of these libraries, then increase with the radius on most random test images. There are two ways out.
 \begin{itemize}
-\item \textbf{Lower bound} (Theorem~\ref{thm:lower}, Corollaries~\ref{cor:mean}--\ref{cor:library}). If the mean radius of a Minkowski chain grows by at most $\delta$ per element, then \emph{every} element of radius $\rho$ has error $\varepsilon\ge(1-o(1))\,\rho/(16\pi^2\delta^2)$, where the error is the Hausdorff distance to the nearest Euclidean disk. Every fine chain is therefore \emph{linearly} anisotropic. If instead the fitted radius grows by bounded steps, then the maximal error is at least $c\,\rho^{1/3}$. For a fixed finite library the slope $\kappa/(1+\kappa)$ is given by a linear program, and octagons attain it.
-\item \textbf{Matching upper bound} (Theorem~\ref{thm:upper}). An explicit chain of periodic lines along the boundary of the square $[-m,m]^2$ has steps $\delta\le\sqrt2m/\pi$ and error $\varepsilon\le\rho/(8m^2)+2m^2$. The optimal error is thus $\Theta(\rho/\delta^2)$ for $\rho\gtrsim\delta^4$, with constants within a factor of 4 asymptotically, and $\Theta(\sqrt\rho)$ when $\delta\sim\rho^{1/4}$.
-\item \textbf{Higher dimensions} (Theorem~\ref{thm:zn}). In $\Z^n$, $\varepsilon\ge c_n\,\rho\,\delta^{-2n}$: bounded steps force linear anisotropy in every dimension.
-\item \textbf{Evidence.} We quantify the violation of the axiom by standard digital disks (Table~\ref{tab:violation}), compare practical families (Table~\ref{tab:families}), and test size distributions on rotated synthetic and real images (Table~\ref{tab:rotation}).
+\item \textbf{Several structuring elements per size.} The sup-closure $\gamma'_r=\bigvee_{s\ge r}\gamma_{D_s}$, i.e.\ the union of the openings by all disks of radius at least $r$, is a granulometry for any family $(D_s)$ (Proposition~\ref{prop:sup}). With digital disks it is correct, as round as the disks, and computable with one opening per radius. Opening transforms~\cite{vincent1994} and local thickness~\cite{hildebrand1997} implicitly rely on this construction. We recommend it in place of single disk openings.
+\item \textbf{One structuring element per size.} The classical alternative builds the elements as \emph{Minkowski chains} $D_k=D_{k-1}\oplus C_k$, which are automatically granulometric~\cite{adams1993,jones1996,soille2003,vincent1994}. Examples are octagons from neighbourhood sequences~\cite{rosenfeld1968,farkas2006}, periodic lines~\cite{jones1996} and Bresenham segments~\cite{adams1993}. These families are polygonal. We prove that this is unavoidable and determine the price.
 \end{itemize}
-The message for practice is that one can be correct (granulometric) or round, but not both at all scales, and our bounds quantify the price. Several lines of related work bear on this problem.
+Our contributions are:
 \begin{itemize}
-\item Chamfer norms~\cite{borgefors1986,thiel2001} approximate Euclidean balls by polygons with a fixed set of edge directions. When their balls form Minkowski chains, as for $3\times3$ masks, Corollary~\ref{cor:library} applies to them.
+\item \textbf{Diagnosis} (Sect.~\ref{sec:violation}). We quantify the violation of the axiom by standard digital disks and its effect on size distributions.
+\item \textbf{Lower bound for single-element chains} (Theorem~\ref{thm:lower}, Corollaries~\ref{cor:mean}--\ref{cor:library}). If the mean radius of a Minkowski chain grows by at most $\delta$ per element, then \emph{every} element of radius $\rho$ has error $\varepsilon\ge(1-o(1))\,\rho/(16\pi^2\delta^2)$, where the error is the Hausdorff distance to the nearest Euclidean disk. If the fitted radius grows by bounded steps, the maximal error is at least $c\,\rho^{1/3}$. For a fixed library the slope $\kappa/(1+\kappa)$ is given by a linear program, and octagons attain it.
+\item \textbf{Matching upper bound and higher dimensions} (Theorems~\ref{thm:upper} and~\ref{thm:zn}). An explicit chain of periodic lines achieves $\Theta(\rho/\delta^2)$, within a factor of 4 asymptotically, and $\Theta(\sqrt\rho)$ when $\delta\sim\rho^{1/4}$. In $\Z^n$, $\varepsilon\ge c_n\rho\,\delta^{-2n}$.
+\item \textbf{Experiments} (Sect.~\ref{sec:experiments}). On synthetic and real images we compare the sup-closure, Gauss disks and single-element families, both on whole size distributions and on per-object sieve sizes.
+\end{itemize}
+In short, round and correct disk granulometries on $\Z^2$ exist, but they need several structuring elements per size. Several lines of related work bear on this problem.
+\begin{itemize}
+\item Chamfer norms~\cite{borgefors1986,thiel2001} approximate Euclidean balls by polygons with a fixed set of edge directions; when their balls form Minkowski chains, as for $3\times3$ masks, Corollary~\ref{cor:library} applies.
 \item Neighbourhood sequences~\cite{farkas2006} and zonohedra~\cite{jensen2019} optimise the roundness of a fixed library.
 \item Soille and Talbot~\cite{soille2001} noted that radial decompositions by Bresenham lines do not generate granulometries.
 \item Normand~\cite{normand2003} builds convex structuring elements by unions of translates instead of Minkowski sums, a construction outside the scope of our bound.
@@ -60,7 +63,16 @@ The \emph{anisotropy} of $X$ is $\A(X)=\max_uw_X-\min_uw_X$, and its \emph{mean 
 \begin{equation}\label{eq:round}
 2\rho-2\varepsilon\le w_X\le2\rho+2\varepsilon,\qquad \A(X)\le4\varepsilon,\qquad|\bar r(X)-\rho|\le\varepsilon .
 \end{equation}
-The opening of $Y$ by a structuring element $D$ is $Y\circ D=\bigcup\{D+t: D+t\subseteq Y\}$. A family $(D_k)$ generates a granulometry if and only if $D_l\circ D_k=D_l$ for all $k\le l$~\cite{matheron1975,serra1982}; since the relation is transitive, consecutive elements suffice. A \emph{Minkowski chain} is a family with $D_k=D_{k-1}\oplus C_k$, and every Minkowski chain is granulometric. Its \emph{increments} are the $C_k$, its \emph{steps} are $\bar r(D_k)-\bar r(D_{k-1})=\bar r(C_k)$, and, if all $C_k$ belong to a finite set $\mathcal L$ (up to translation), $\mathcal L$ is its \emph{library}.
+The opening of $Y$ by a structuring element $D$ is $Y\circ D=\bigcup\{D+t: D+t\subseteq Y\}$. A family $(D_k)$ generates a \emph{single-element granulometry} $\gamma_k(Y)=Y\circ D_k$ if and only if $D_l\circ D_k=D_l$ for all $k\le l$~\cite{matheron1975,serra1982}; since the relation is transitive, consecutive elements suffice. A \emph{Minkowski chain} is a family with $D_k=D_{k-1}\oplus C_k$, and every Minkowski chain generates a single-element granulometry. Its \emph{increments} are the $C_k$, its \emph{steps} are $\bar r(D_k)-\bar r(D_{k-1})=\bar r(C_k)$, and, if all $C_k$ belong to a finite set $\mathcal L$ (up to translation), $\mathcal L$ is its \emph{library}. Without the single-element restriction, any family of structuring elements can be turned into a granulometry.
+
+\begin{proposition}[sup-closure]\label{prop:sup}
+For any finite sets $D_1,\dots,D_R\subset\Z^n$, the operators $\gamma'_r=\bigvee_{s=r}^R\gamma_{D_s}$, $r=1,\dots,R$, where $\gamma_{D}(Y)=Y\circ D$, form a granulometry.
+\end{proposition}
+\begin{proof}
+A supremum of openings is an opening~\cite{serra1982}, and $\gamma'_r$ is decreasing in $r$. Let $r\le s$. Since $\gamma'_r$ and $\gamma'_s$ are anti-extensive and increasing, $\gamma'_r\gamma'_s\le\gamma'_s$ and $\gamma'_s\gamma'_r\le\gamma'_s$. Conversely, for every $t\ge s$ we have $\gamma'_r\gamma'_s\ge\gamma_{D_t}\gamma_{D_t}=\gamma_{D_t}$ and $\gamma'_s\gamma'_r\ge\gamma_{D_t}\gamma_{D_t}=\gamma_{D_t}$, and taking the supremum over $t\ge s$ gives $\ge\gamma'_s$.\qed
+\end{proof}
+
+Computing $\gamma'_r$ from $r=R$ down to $1$ needs one opening per radius, the same cost as the single-element family $\gamma_{D_r}$. The structuring elements are unchanged, so with digital disks the sup-closure is exactly as round as the disks. The rest of the paper explains why the single-element route cannot achieve this.
 
 %===============================================================================
 \section{Digital Disks Are Not Granulometric}\label{sec:violation}
@@ -74,7 +86,7 @@ Figure~\ref{fig:idea}(a) shows the smallest instance of the problem. We tested t
 
 \begin{table}[t]
 \centering
-\caption{Violations of the absorption condition by standard digital disks, $1\le s<r\le40$.}\label{tab:violation}
+\caption{Violations of the absorption condition by standard digital disks, $1\le s<r\le40$. The last row is the sup-closure of \texttt{disk}, which uses several elements per size and is always a granulometry; its pairwise conditions do not apply.}\label{tab:violation}
 \begin{tabular}{lccc}
 \toprule
  & violating & violating & images with non-\\
@@ -82,6 +94,8 @@ family & pairs $(s,r)$ & pairs $(r-1,r)$ & monotone size distr.\\
 \midrule
 \texttt{scikit-image} \texttt{disk} & 571/780 (73\%) & 30/39 & 253/400\\
 OpenCV \texttt{MORPH\_ELLIPSE} & 628/780 (81\%) & 36/39 & 241/400\\
+\midrule
+sup-closure of \texttt{disk} (Prop.~\ref{prop:sup}) & \multicolumn{2}{c}{not applicable} & 0/400\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -89,7 +103,7 @@ OpenCV \texttt{MORPH\_ELLIPSE} & 628/780 (81\%) & 36/39 & 241/400\\
 One could try to extract a granulometric \emph{subsequence} of digital disks. Over all origin-centred disks $\{p:\|p\|^2\le n\}$ with $n\le900$, the largest radius reachable by a chain of consecutively open disks with radius gaps at most $G$ is $2.0$ for $G=1$, $9.9$ for $G=2$ and $21.8$ for $G=3$, and radius $30$ is reached only with $G\ge5$. Digital disks thus give at best very coarse granulometries.
 
 %===============================================================================
-\section{Lower Bounds}\label{sec:lower}
+\section{Lower Bounds for Single-Element Chains}\label{sec:lower}
 Additivity~\eqref{eq:additive} turns the roundness of two elements of a chain into a constraint on the increments between them. All edges of the increments are lattice vectors. If the increments are short, these vectors leave a gap of directions around each axis (Fig.~\ref{fig:idea}b), and a polygon whose edges avoid an angular interval cannot be round (Fig.~\ref{fig:idea}c). Adding more elements to the chain makes the polygon larger but does not fill the gap, so the deviation grows with the radius.
 
 \begin{lemma}[direction gap]\label{lem:gap}
@@ -137,21 +151,9 @@ Then $\kappa:=\kappa(\mathcal L)>0$, and the last element of every chain with li
 For $\lambda$ in the simplex, $f(\lambda)=\A(\sum\lambda_Cw_C)/\min\sum\lambda_Cw_C$ takes values in $(0,\infty]$: $\sum\lambda_Cw_C$ is the width function of the polygon $\sum\lambda_C\conv C$, which does not have constant width, because bodies of constant width are strictly convex~\cite{schneider2014}. Moreover $f$ is continuous where finite and tends to $\infty$ where the minimum vanishes, so it attains a positive minimum, and $\kappa=\frac12\min f>0$. For the chain, write $W=w_{D_K}-w_{D_0}=\sum_Cn_Cw_C$ and $s=\frac12\min W\ge\rho_K-\rho_0-\varepsilon_0-\varepsilon_K$. Then $\A(W)\ge4\kappa s$ and $\A(W)\le4\varepsilon_K+\A(D_0)$.\qed
 \end{proof}
 
-\begin{table}[t]
-\centering
-\caption{Slope $\kappa$ of Corollary~\ref{cor:library} for classical libraries ($D_4$-images included). Segment libraries contain the 8-connected digital straight segments (DSS) or the periodic lines $\{0,v\}$ of all primitive $v$ with $\|v\|\le m$.}\label{tab:kappa}
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lc@{\hspace{1.2em}}lc@{\hspace{1.2em}}lc}
-\toprule
-library & $\kappa$ & library & $\kappa$ & library & $\kappa$\\
-\midrule
-$\{N_4\}$ or $\{N_8\}$ & 0.2071 & DSS, $m=\sqrt5$ & 0.0176 & periodic, $m=\sqrt5$ & 0.0137\\
-$\{N_4,N_8\}$ (octagons) & 0.0412 & DSS, $m=10$ & 0.0028 & periodic, $m=5$ & 0.0038\\
-\bottomrule
-\end{tabular}
-\end{table}
 
-We compute $\kappa$ by linear programming on a grid of 3600 directions (Table~\ref{tab:kappa}). Since the grid underestimates the anisotropy, the computed values are lower approximations, and the bounds remain valid. For example, $\kappa(\{N_4\})=(\sqrt2-1)/2$ is the anisotropy of the square. Corollary~\ref{cor:library} is tight for octagons: the element of fitted radius $961.5$ of the best octagon chain has $\varepsilon/\rho=0.039571$, while $\kappa/(1+\kappa)=0.039570$.
+
+We compute $\kappa$ by linear programming on a grid of 3600 directions, with all $D_4$-images included. It is $0.2071$ for $\{N_4\}$ or $\{N_8\}$ (squares) and $0.0412$ for octagons. For libraries of the 8-connected digital straight segments (DSS) of all primitive $v$ with $\|v\|\le m$, it is $0.0176$ for $m=\sqrt5$ and $0.0028$ for $m=10$. For the corresponding periodic lines $\{0,v\}$ it is $0.0137$ and, for $m=5$, $0.0038$. Since the grid underestimates the anisotropy, the computed values are lower approximations, and the bounds remain valid. For example, $\kappa(\{N_4\})=(\sqrt2-1)/2$ is the anisotropy of the square. Corollary~\ref{cor:library} is tight for octagons: the element of fitted radius $961.5$ of the best octagon chain has $\varepsilon/\rho=0.039571$, while $\kappa/(1+\kappa)=0.039570$.
 
 %===============================================================================
 \section{Matching Upper Bound and Higher Dimensions}\label{sec:upper}
@@ -174,7 +176,7 @@ Like all our bounds, Theorem~\ref{thm:upper} concerns convex hulls. Minkowski su
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/error.pdf}
+\includegraphics[width=0.9\textwidth]{figures/error.pdf}
 \caption{(a) Error of practical families for $\rho\le48$; mean-radius steps are below $2.2$. (b) Chains of Theorem~\ref{thm:upper} for $m=2,4,8$, with the upper bound of Theorem~\ref{thm:upper} (dashed) and the lower bound of Corollary~\ref{cor:mean} (dotted), and the multiscale chain against $0.3\sqrt\rho$.}\label{fig:error}
 \end{figure}
 
@@ -188,17 +190,18 @@ The directions $u$ split into regions in each of which a single vertex of $Q=\fr
 \end{proof}
 
 %===============================================================================
-\section{Practical Families and Experiments}\label{sec:experiments}
-\paragraph{Families.} Table~\ref{tab:families} compares families for $\rho\le48$ with mean-radius steps between $1.2$ and $2.2$, i.e.\ about one element per integer radius. For the fixed libraries (Bresenham/DSS segments as in~\cite{adams1993}, periodic lines as in~\cite{jones1996}), we use the optimal weights $\lambda^\ast$ of Corollary~\ref{cor:library}. We move towards the multiplicities $\operatorname{round}(t\lambda^\ast)$ one elementary set at a time, choosing at each step the set that keeps the element roundest; the chains contain the $2\times2$ square. We also include a chain of individual DSS computed by mixed-integer programming (HiGHS~\cite{huangfu2018}), which minimises the maximal error over $r\le48$. All elements of these granulometric families were verified to be hole-free. The optimised chains halve the error of octagons and reach about a third of that of Bresenham decompositions, but they remain three times less round than Gauss disks. At these radii Corollary~\ref{cor:mean} only forces $0.06$--$0.14$ for the steps in the table. The lower bound is far from binding for small disks, and its force lies in the growth rate at large radii (Fig.~\ref{fig:error}b). Relaxing the step size helps, as Theorem~\ref{thm:lower} predicts through $\ell$: with radius steps up to $4.1$, the 13-direction periodic chain reaches $0.41$. Conversely, if multiplicities could be real, a monotone family of DSS with $\|v\|\le45$ would have error at most $0.43$ on a grid of radii up to $2000$, as we found by solving a linear program; we do not claim that this persists for all radii. Integrality is what Step~1 of the proof exploits.
+\section{Experiments}\label{sec:experiments}
+\paragraph{Families.} We compare Gauss disks (\texttt{disk}), their sup-closure (Proposition~\ref{prop:sup}), and five single-element families with mean-radius steps between $1.2$ and $2.2$, i.e.\ about one element per integer radius. These are octagons; Bresenham/DSS segments as in~\cite{adams1993}; periodic lines as in~\cite{jones1996} in 8 and in 13 directions (the $D_4$-images of $(1,0),(1,1),(2,1)$ and, for 13, also $(3,1)$); and a chain of individual DSS computed by mixed-integer programming (HiGHS~\cite{huangfu2018}), which minimises the maximal error for $r\le48$. For the segment libraries, we take the optimal weights $\lambda^\ast$ of Corollary~\ref{cor:library} and move towards the multiplicities $\operatorname{round}(t\lambda^\ast)$ one elementary set at a time, choosing at each step the set that keeps the element roundest. These chains contain the $2\times2$ square, and all their elements were verified to be hole-free.
 
 \begin{table}[t]
 \centering
-\caption{Error $\varepsilon$ (pixels) of families for $\rho\le48$: largest mean-radius step $\delta$, maximum and mean error, and the largest radius reached with $\max\varepsilon\le1$.}\label{tab:families}
+\caption{Families for $\rho\le48$: largest mean-radius step $\delta$, maximum and mean error, and the largest radius reached with $\max\varepsilon\le1$. The sup-closure uses several elements per size.}\label{tab:families}
 \begin{tabular}{lccccc}
 \toprule
 family & gran. & max step $\delta$ & max $\varepsilon$ & mean $\varepsilon$ & $\rho$ at $\varepsilon\le1$\\
 \midrule
 Gauss disks (\texttt{disk}) & no & 1.19 & 0.35 & 0.21 & --\\
+sup-closure of Gauss disks & yes & 1.19 & 0.35 & 0.21 & $\ge48$\\
 octagons (neighbourhood seq.) & yes & 2.17 & 1.85 & 0.98 & 25\\
 Bresenham/DSS, 8 directions & yes & 1.48 & 3.27 & 1.75 & 12\\
 periodic lines, 8 dir., LP weights & yes & 1.42 & 1.09 & 0.60 & 41\\
@@ -208,36 +211,56 @@ DSS, $\|v\|\le6$, MILP & yes & 2.09 & 1.00 & 0.57 & 44\\
 \end{tabular}
 \end{table}
 
-\paragraph{Size distributions.} For each scene $X$ and angle $\theta\in\{0^\circ,5^\circ,\dots,45^\circ\}$ we compute $F_\theta(r)=|X_\theta\circ D_r|/|X_\theta|$, implementing openings by chain elements as cascades of erosions and dilations by their elementary sets. We report the rotation sensitivity $S=\operatorname{mean}_r\operatorname{std}_\theta F_\theta(r)$ and the number of increases $F_\theta(r+1)>F_\theta(r)$, which are impossible for a granulometry. The scenes are nine squares of sides 17 to 81 pixels, rasterised exactly after rotation ($r\le40$), and three real images from \texttt{scikit-image}: fluorescence microscopy of nuclei (\texttt{human\_mitosis}, $r\le15$), \texttt{coins} ($r\le30$) and a material texture (\texttt{gravel}, $r\le20$). The real images are smoothed, rotated with bilinear interpolation and thresholded at the Otsu level of the unrotated image.
+Table~\ref{tab:families} and Fig.~\ref{fig:error}(a) summarise roundness. Among single-element families, the optimised chains halve the error of octagons and reach a third of that of Bresenham decompositions, but they remain three times less round than the disks used by the sup-closure. At these radii Corollary~\ref{cor:mean} only forces $0.06$--$0.14$ for the steps in the table. The lower bound is far from binding for small disks; its force lies in the growth rate (Fig.~\ref{fig:error}b). As Theorem~\ref{thm:lower} predicts through $\ell$, larger steps help: with radius steps up to $4.1$, the 13-direction chain reaches $0.41$. With real multiplicities, a linear program finds monotone DSS families with error at most $0.43$ up to radius $2000$ (numerically; not proven), which points to integrality, used in Step~1 of the proof, as the obstruction.
+
+\paragraph{Size distributions under rotation.} For each scene $X$, rotated by every multiple of $5^\circ$ up to $45^\circ$, we compute $F_\theta(r)=|\gamma_r(X_\theta)|/|X_\theta|$, implementing openings by chain elements as cascades of erosions and dilations by their elementary sets. We report the rotation sensitivity $S=\operatorname{mean}_r\operatorname{std}_\theta F_\theta(r)$ and the number of increases $F_\theta(r+1)>F_\theta(r)$, which are impossible for a granulometry. The scenes are nine squares of sides 17 to 81 pixels, rasterised exactly after rotation ($r\le40$), and three real images from \texttt{scikit-image}: fluorescence microscopy of nuclei (\texttt{human\_mitosis}, $r\le15$), \texttt{coins} ($r\le30$), and a material texture (\texttt{gravel}, $r\le20$). The real images are smoothed, rotated with bilinear interpolation, and thresholded at the Otsu level of the unrotated image.
+
+\paragraph{Per-object sieve size.} Sieving assigns to each object $O$ the size $s(O)=\max\{r:\gamma_r(X)\cap O\ne\emptyset\}$ of the largest element that fits inside it, which is the same for Gauss disks and their sup-closure. We compare $s(O)$ with the Euclidean inscribed radius, the maximum of the distance transform in $O$. We report the mean relative error and the mean standard deviation of $s(O)$ under rotation, relative to the inscribed radius, on objects matched by centroid.
 
 \begin{table}[t]
 \centering
-\caption{Rotation sensitivity $S$ ($\times10^{3}$) of size distributions; in parentheses, the number of increases of $F_\theta$ when nonzero.}\label{tab:rotation}
-\begin{tabular}{lcccccc}
+\caption{Top: rotation sensitivity $S$ ($\times10^3$) of size distributions; in parentheses, the number of increases when nonzero. Bottom: per-object sieve size on \texttt{coins} (21 objects, inscribed radius 18--30 pixels; one merged object larger than the tested radii is excluded), error and rotation standard deviation in \% of the inscribed radius.}\label{tab:rotation}
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{lccccccc}
 \toprule
-scene & Gauss & octagons & DSS 8 dir. & periodic 8 & periodic 13 & DSS MILP\\
+ & Gauss & sup-cl. & octag. & DSS 8 & per. 8 & per. 13 & MILP\\
 \midrule
-squares (synthetic) & 4.0 (17) & 30.2 & 13.3 & 11.8 & 9.5 & 17.6\\
-nuclei (microscopy) & 1.7 & 1.9 & 1.9 & 2.0 & 1.6 & 1.4\\
-coins & 5.0 & 5.0 & 6.4 & 4.2 & 5.0 & 6.2\\
-gravel & 1.4 & 1.3 & 1.6 & 1.1 & 1.6 & 1.2\\
+squares (synthetic) & 4.0 (17) & 4.0 & 30.2 & 13.3 & 11.8 & 9.5 & 17.6\\
+nuclei (microscopy) & 1.7 & 1.7 & 1.9 & 1.9 & 2.0 & 1.6 & 1.4\\
+coins & 5.0 & 5.0 & 5.0 & 6.4 & 4.2 & 5.0 & 6.2\\
+gravel & 1.4 & 1.4 & 1.3 & 1.6 & 1.1 & 1.6 & 1.2\\
+\midrule
+coins: size error (\%) & 2.8 & 2.8 & 4.8 & 5.7 & 4.6 & 4.1 & 3.8\\
+coins: rotation std (\%) & 0.65 & 0.65 & 1.13 & 1.20 & 1.06 & 0.54 & 1.00\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/rotation.pdf}
-\caption{Size distributions of the rotated synthetic scene, one curve per angle: Gauss disks are nearly isotropic but non-monotone; octagons are monotone but orientation dependent; the periodic-line chain is monotone and three times less orientation dependent.}\label{fig:rotation}
+\includegraphics[width=0.88\textwidth]{figures/rotation.pdf}
+\caption{Size distributions of the rotated synthetic scene, one curve per angle. Single openings by Gauss disks are nearly isotropic but non-monotone. Their sup-closure removes the increases and keeps the isotropy. Octagons are monotone but orientation dependent, and the 13-direction periodic chain reduces this dependence by a factor of three.}\label{fig:rotation}
 \end{figure}
 
-Table~\ref{tab:rotation} and Fig.~\ref{fig:rotation} illustrate the dilemma of the title. On the synthetic scene, Gauss disks are the least orientation dependent but produce 17 increases, i.e.\ negative pattern-spectrum values. Octagons are correct but strongly orientation dependent, and the periodic-line chain divides their sensitivity by three. On the three real images, the families differ by at most $0.6\cdot10^{-3}$ (nuclei, gravel) and $2.2\cdot10^{-3}$ (coins), with no consistent ranking, i.e.\ within the effect of interpolation and thresholding; no increases occur there. Rounded, randomly oriented objects average out the anisotropy of the structuring element. The choice of family therefore matters most for polygonal or aligned structures. The violation of the axiom by Gauss disks, in contrast, is a correctness issue that can surface on any image (Table~\ref{tab:violation}).
+\paragraph{Results.} Table~\ref{tab:rotation} and Fig.~\ref{fig:rotation} confirm the picture from the theory.
+\begin{itemize}
+\item \emph{The sup-closure is the best choice.} On every scene it has exactly the rotation sensitivity of Gauss disks, it never increases, and it removes the 17 increases that single Gauss-disk openings produce on the synthetic scene; on the random images of Sect.~\ref{sec:violation}, it removes all increases (0 of the 400 images, against 253 of 400 for single openings).
+\item \emph{Single-element families pay for their polygonal shape.} On the synthetic scene, octagons are 7.5 times more orientation dependent than the disks, and the 13-direction periodic chain reduces this to 2.4 times.
+\item \emph{The cost shows on large objects.} Per object, on coins (inscribed radii 18--30 pixels), octagons measure sizes with 4.8\% error and 1.1\% rotation scatter, against 2.8\% and 0.65\% for the disks. The 13-direction chain has the smallest scatter (0.54\%) and a 4.1\% error.
+\item \emph{It does not show on small objects or on whole images.} On nuclei and gravel, with inscribed radii of 3--10 pixels, discretisation dominates: every family errs by 13--24\% and none is consistently best. On whole size distributions of the real images, all families agree within the effect of interpolation and thresholding.
+\end{itemize}
+The anisotropy of single-element families matters most for large or polygonal objects. The failure of single disk openings is a correctness issue on any image.
 
-\paragraph{Recommendations.} If size distributions must be correct (monotone, with non-negative pattern spectra), use a Minkowski chain, not library disks. For radii up to about $50$, the periodic-line chain with the 13 directions of $(1,0),(1,1),(2,1),(3,1)$ and their $D_4$-images, together with the $2\times2$ square and LP weights, has error at most $1.04$ pixels (mean $0.48$). Openings by it are cascades of two-point erosions and dilations, whose cost grows linearly with the radius instead of quadratically. For larger radii, use larger libraries: by Corollary~\ref{cor:library} a library with slope $\kappa$ loses $\frac\kappa{1+\kappa}\rho+O(1)$, and the best choice grows with the range of radii (Fig.~\ref{fig:error}b). If only roundness matters and absorption is not needed, Gauss disks remain the roundest option. Our code and the computed chains are available\footnote{Repository link withheld for review.}.
+\paragraph{Recommendations.}
+\begin{itemize}
+\item To compute size distributions or pattern spectra with disks, do not open by each library disk separately. Use the sup-closure of Proposition~\ref{prop:sup}: open by every radius from the largest down and accumulate the unions. This costs nothing extra and yields a correct and round granulometry.
+\item If a single structuring element per size is required, e.g.\ to implement each opening as a fixed cascade of two-point erosions and dilations whose cost grows linearly rather than quadratically with the radius, use a Minkowski chain with LP weights. Up to radius about $50$, the 13-direction periodic-line chain has error at most $1.04$ pixels. For larger radii, a library with slope $\kappa$ loses $\frac\kappa{1+\kappa}\rho+O(1)$ (Corollary~\ref{cor:library}), and the best library grows with the range of radii (Fig.~\ref{fig:error}b).
+\end{itemize}
+Our code and the computed chains are available\footnote{Repository link withheld for review.}.
 
 %===============================================================================
 \section{Conclusion}
-Standard digital disks do not generate granulometries, and granulometric Minkowski chains cannot be uniformly round. With mean-radius steps $\delta$ their error is $\Theta(\rho/\delta^2)$, and $\Theta(\sqrt\rho)$ when $\delta\sim\rho^{1/4}$; bounded steps force linear growth in every dimension. For practice, one must choose between correct but anisotropic chains, whose loss the constant $\kappa$ quantifies, and round but incorrect digital disks. Our periodic-line chains halve the loss of octagons. Three questions remain open: the optimal rate when only the fitted radius has bounded steps, between $\rho^{1/3}$ and $\rho^{1/2}$; whether granulometries that are not Minkowski chains, where $D_l$ is merely a union of translates of $D_k$, can escape the bound; and matching upper bounds in $\Z^3$.
+The most direct way of measuring size distributions with disks, opening by each digital disk of a library, is not a granulometry, and its size distributions can increase. The fix is simple: take the sup-closure, which needs several structuring elements per size and is correct, round and no more expensive. Single-element families cannot do as well, and we quantified exactly why. With mean-radius steps $\delta$, their error is $\Theta(\rho/\delta^2)$, it is $\Theta(\sqrt\rho)$ when $\delta\sim\rho^{1/4}$, and bounded steps force linear growth in every dimension. Three questions remain open: the optimal rate when only the fitted radius has bounded steps, between $\rho^{1/3}$ and $\rho^{1/2}$; whether single-element granulometries that are not Minkowski chains, built from unions of translates as in~\cite{normand2003}, can escape the bound; and matching upper bounds in $\Z^3$.
 
 \bibliographystyle{splncs04}
 \bibliography{refs}

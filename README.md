@@ -1,4 +1,4 @@
-# DGMM 2027 submission: "Correct or Round? Granulometries by Digital Disks"
+# DGMM 2027 submission: "Disk Granulometries on the Digital Grid: Why a Single Structuring Element Is Not Enough"
 
 Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages, EasyChair).
 
@@ -6,15 +6,16 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 - `granulo/` — all code and data for it (see table below).
 
 ## Main results
-1. Standard digital disks are not granulometric (scikit-image: 73% of radius pairs violate absorption, OpenCV 81%;
-   size distributions increase with r on ~60% of random images).
-2. Lower bound (Thm 1 + Cors): a Minkowski chain with mean-radius steps <= delta: every element has error >= rho/(16 pi^2 delta^2)
-   (asymptotically) -> bounded steps force LINEAR anisotropy; fitted-radius steps -> rho^(1/3); fixed library ->
-   slope kappa/(1+kappa) (LP), attained exactly by octagons.
-3. Matching upper bound (Thm 3): periodic lines on the boundary of [-m,m]^2 give eps <= rho/(8m^2) + 2m^2 with steps
-   <= sqrt2 m/pi -> optimal error Theta(rho/delta^2) (factor 4), Theta(sqrt rho) with delta ~ rho^(1/4).
-4. Z^n (Thm 2): eps >= c_n rho delta^(-2n).
-5. Experiments: practical families (Table 3), rotated synthetic + 3 real images (Table 4).
+1. Diagnosis: opening by each library disk (scikit-image, OpenCV) is NOT a granulometry (73% / 81% of radius pairs
+   violate absorption); size distributions increase with r on 253/400 (241/400) random images.
+2. Remedy (Prop. 1): the sup-closure gamma'_r = sup_{s>=r} opening by disk(s) is a granulometry, as round as the disks
+   and equally cheap (0/400 non-monotone; same rotation sensitivity as plain disks). Recommended in practice.
+3. Single structuring element per size (Minkowski chains) cannot be round: mean-radius steps <= delta -> every element
+   has error >= rho/(16 pi^2 delta^2) (asymptotically); fitted-radius steps -> rho^(1/3); fixed library ->
+   slope kappa/(1+kappa), attained exactly by octagons.
+4. Matching upper bound: periodic lines on the boundary of [-m,m]^2: eps <= rho/(8m^2) + 2m^2, steps <= sqrt2 m/pi
+   -> Theta(rho/delta^2) (factor 4), Theta(sqrt rho) with delta ~ rho^(1/4). Z^n: eps >= c_n rho delta^(-2n).
+5. Experiments: practical families (Table 3), rotation + per-object sieve size on synthetic and 3 real images (Table 4).
 
 ## Code (`granulo/`)
 | file | purpose |
@@ -31,7 +32,10 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `families.py`, `exp_rotation.py` | exact morphology by cascades; rotation experiment |
 | `all_families.py` | all families of Table 3 (Gauss, octagons, Bresenham, periodic 8/13 dir., MILP), cached |
 | `periodic_large.py` | LP-weighted periodic chains up to r = 1000 (Fig. 1b) |
-| `exp_rotation2.py` | Table 4: rotation experiment, synthetic + real images |
+| `exp_rotation2.py` | Table 4 (top): rotation experiment incl. sup-closure, synthetic + real images |
+| `exp_objects.py` | Table 4 (bottom): per-object sieve size vs inscribed radius |
+| `nonmono_sup.py` | sup-closure vs single openings on the 400 random images (Table 1) |
+| `fig_rotation2.py` | Fig. 3 (rotation curves, 4 families) |
 | `fig_final.py` | final figures (error, shapes, rotation) |
 | `upper.py`, `upper_multi.py` | Theorem 3 construction: verification of bound, steps, gaps; multiscale O(sqrt rho) |
 | `fig_idea.py` | Fig. 1 (axiom violation example, direction gap, proof idea) |

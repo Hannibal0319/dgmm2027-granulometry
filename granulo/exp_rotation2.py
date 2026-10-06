@@ -16,7 +16,7 @@ from exp_rotation import scene
 from families import open_cascade
 
 ANGLES = list(range(0, 46, 5))
-NAMES = ["gauss", "octagon", "adams", "periodic", "ours", "dss_milp"]
+NAMES = ["gauss", "gauss_sup", "octagon", "adams", "periodic", "ours", "dss_milp"]
 
 
 def real_scene(name, theta):
@@ -44,11 +44,17 @@ def run(scene_fn, R, fams):
     out = {}
     Xs = [scene_fn(t) for t in ANGLES]
     for name in NAMES:
-        fam = fams[name][0]
+        fam = fams["gauss"][0] if name == "gauss_sup" else fams[name][0]
         F = np.zeros((len(ANGLES), R + 1))
         for i, X in enumerate(Xs):
             A0 = X.sum()
             F[i, 0] = 1
+            if name == "gauss_sup":   # sup-closure: union of openings by all disks of radius >= r
+                acc = np.zeros_like(X)
+                for r in range(R, 0, -1):
+                    acc |= open_by("gauss", fam, r, X)
+                    F[i, r] = acc.sum() / A0
+                continue
             for r in range(1, R + 1):
                 F[i, r] = open_by(name, fam, r, X).sum() / A0
         out[name] = dict(S=float(F.std(0).mean()), violations=int((np.diff(F, axis=1) > 1e-12).sum()), F=F.tolist())
