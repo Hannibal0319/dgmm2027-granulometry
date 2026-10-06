@@ -18,7 +18,7 @@ STY = {"gauss": ("0.5", "Gauss disks (not granulometric)"), "octagon": ("C3", "o
 def lb_mean_step(rho, delta):
     """Cor. 1 with D = pi delta: smallest eps with 8 eps >= 2 (rho - 2 eps)(1 - cos(alpha/2))."""
     a = math.atan(1 / (math.pi * delta)); c = 1 - math.cos(a / 2)
-    return 2 * rho * c / (8 + 4 * c)
+    return rho * c / (2 + c)   # chain from a point: eps_K >= rho c / (2 + c)
 
 
 fig, ax = plt.subplots(1, 2, figsize=(7.2, 2.7))

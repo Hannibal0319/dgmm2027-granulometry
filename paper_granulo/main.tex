@@ -24,7 +24,7 @@
 \maketitle
 
 \begin{abstract}
-Granulometries by disks are the standard morphological tool for measuring size distributions. On $\Z^2$ they face a conflict: the structuring elements should look like Euclidean disks, and they should satisfy Matheron's absorption axiom, i.e.\ each disk must be open with respect to every smaller one. We first show that the digital disks of common libraries violate the axiom for most pairs of radii, so that size distributions computed with them can increase with the radius. Families that satisfy the axiom are classically built as Minkowski chains of small structuring elements, such as neighbourhood sequences, periodic lines or Bresenham decompositions, and they are visibly polygonal. We prove that this is unavoidable. If the mean radius of a Minkowski chain grows by at most $\delta$ per element, the Hausdorff distance between its elements and Euclidean disks of radius $\rho$ is at least $\rho/(32\pi^2\delta^2)$ asymptotically. Hence fine granulometric chains are linearly anisotropic. An explicit chain of periodic lines attains this rate up to a constant factor of~8, and letting $\delta$ grow like $\rho^{1/4}$ yields error $\Theta(\sqrt\rho)$. The lower bound extends to $\Z^n$, and for a fixed library its constant is computed exactly by linear programming and is attained by octagons. Experiments on synthetic and real images illustrate both the violation of the axiom by digital disks and the anisotropy of granulometric chains.
+Granulometries by disks are the standard morphological tool for measuring size distributions. On $\Z^2$ they face a conflict: the structuring elements should look like Euclidean disks, and they should satisfy Matheron's absorption axiom, i.e.\ each disk must be open with respect to every smaller one. We first show that the digital disks of common libraries violate the axiom for most pairs of radii, so that size distributions computed with them can increase with the radius. Families that satisfy the axiom are classically built as Minkowski chains of small structuring elements, such as neighbourhood sequences, periodic lines or Bresenham decompositions, and they are visibly polygonal. We prove that this is unavoidable. If the mean radius of a Minkowski chain grows by at most $\delta$ per element, then every element of radius $\rho$ lies at Hausdorff distance at least $\rho/(16\pi^2\delta^2)$ from every disk, asymptotically. Hence fine granulometric chains are linearly anisotropic. An explicit chain of periodic lines attains this rate up to a constant factor of~4, and letting $\delta$ grow like $\rho^{1/4}$ yields error $\Theta(\sqrt\rho)$. The lower bound extends to $\Z^n$, and for a fixed library its constant is computed exactly by linear programming and is attained by octagons. Experiments on synthetic and real images illustrate both the violation of the axiom by digital disks and the anisotropy of granulometric chains.
 \keywords{Granulometry \and Digital disk \and Minkowski sum \and Lattice polygon \and Width function \and Pattern spectrum}
 \end{abstract}
 
@@ -36,13 +36,19 @@ On the grid $\Z^2$, practitioners face a choice that is rarely made explicit. Th
 
 We show that this trade-off is a theorem, and we determine its rate.
 \begin{itemize}
-\item \textbf{Lower bound} (Theorem~\ref{thm:lower}, Corollaries~\ref{cor:mean}--\ref{cor:library}). If the mean radius of a Minkowski chain grows by at most $\delta$ per element, its error $\varepsilon$, the Hausdorff distance to Euclidean disks, satisfies
-$\varepsilon\ge(1-o(1))\,\rho/(32\pi^2\delta^2)$ at radius~$\rho$. Every fine chain is therefore \emph{linearly} anisotropic. If instead the fitted radius grows by bounded steps, then $\varepsilon\ge c\,\rho^{1/3}$. For a fixed finite library the slope is an explicit linear program, and it is attained by octagons.
-\item \textbf{Matching upper bound} (Theorem~\ref{thm:upper}). An explicit chain of periodic lines along the boundary of the square $[-m,m]^2$ has steps $\delta\le\sqrt2m/\pi$ and error $\varepsilon\le\rho/(8m^2)+2m^2$. The optimal error is thus $\Theta(\rho/\delta^2)$ for $\rho\gtrsim\delta^4$, with constants within a factor of 8 asymptotically, and $\Theta(\sqrt\rho)$ when $\delta\sim\rho^{1/4}$.
+\item \textbf{Lower bound} (Theorem~\ref{thm:lower}, Corollaries~\ref{cor:mean}--\ref{cor:library}). If the mean radius of a Minkowski chain grows by at most $\delta$ per element, then \emph{every} element of radius $\rho$ has error $\varepsilon\ge(1-o(1))\,\rho/(16\pi^2\delta^2)$, where the error is the Hausdorff distance to the nearest Euclidean disk. Every fine chain is therefore \emph{linearly} anisotropic. If instead the fitted radius grows by bounded steps, then the maximal error is at least $c\,\rho^{1/3}$. For a fixed finite library the slope $\kappa/(1+\kappa)$ is given by a linear program, and octagons attain it.
+\item \textbf{Matching upper bound} (Theorem~\ref{thm:upper}). An explicit chain of periodic lines along the boundary of the square $[-m,m]^2$ has steps $\delta\le\sqrt2m/\pi$ and error $\varepsilon\le\rho/(8m^2)+2m^2$. The optimal error is thus $\Theta(\rho/\delta^2)$ for $\rho\gtrsim\delta^4$, with constants within a factor of 4 asymptotically, and $\Theta(\sqrt\rho)$ when $\delta\sim\rho^{1/4}$.
 \item \textbf{Higher dimensions} (Theorem~\ref{thm:zn}). In $\Z^n$, $\varepsilon\ge c_n\,\rho\,\delta^{-2n}$: bounded steps force linear anisotropy in every dimension.
 \item \textbf{Evidence.} We quantify the violation of the axiom by standard digital disks (Table~\ref{tab:violation}), compare practical families (Table~\ref{tab:families}), and test size distributions on rotated synthetic and real images (Table~\ref{tab:rotation}).
 \end{itemize}
-The message for practice is that one can be correct (granulometric) or round, but not both at all scales, and our bounds quantify the price. Related work on approximating circles by neighbourhood sequences~\cite{farkas2006} or spheres by zonohedra~\cite{jensen2019} optimises roundness for a fixed library, and Soille and Talbot~\cite{soille2001} noted that radial decompositions by Bresenham lines do not generate granulometries. To our knowledge, no lower bound of this kind has been published.
+The message for practice is that one can be correct (granulometric) or round, but not both at all scales, and our bounds quantify the price. Several lines of related work bear on this problem.
+\begin{itemize}
+\item Chamfer norms~\cite{borgefors1986,thiel2001} approximate Euclidean balls by polygons with a fixed set of edge directions. When their balls form Minkowski chains, as for $3\times3$ masks, Corollary~\ref{cor:library} applies to them.
+\item Neighbourhood sequences~\cite{farkas2006} and zonohedra~\cite{jensen2019} optimise the roundness of a fixed library.
+\item Soille and Talbot~\cite{soille2001} noted that radial decompositions by Bresenham lines do not generate granulometries.
+\item Normand~\cite{normand2003} builds convex structuring elements by unions of translates instead of Minkowski sums, a construction outside the scope of our bound.
+\end{itemize}
+To our knowledge, no lower bound of this kind has been published.
 
 %===============================================================================
 \section{Preliminaries}\label{sec:prelim}
@@ -58,7 +64,7 @@ The opening of $Y$ by a structuring element $D$ is $Y\circ D=\bigcup\{D+t: D+t\s
 
 %===============================================================================
 \section{Digital Disks Are Not Granulometric}\label{sec:violation}
-We tested the condition ``$D_r$ is $D_s$-open'' for all pairs $1\le s<r\le40$, for the digital disks of \texttt{scikit-image}~\cite{vanderwalt2014} (\texttt{disk}, the Gauss digitisation $\{p:\|p\|\le r\}$) and of OpenCV~\cite{bradski2000} (\texttt{MORPH\_ELLIPSE}). As Table~\ref{tab:violation} shows, most pairs violate it, including most consecutive pairs. When $D_r$ is not $D_s$-open, $X\circ D_r\not\subseteq X\circ D_s$ for some $X$, and the size distribution $r\mapsto|X\circ D_r|$ can \emph{increase}, so the pattern spectrum takes negative values. On random $120\times120$ images made of 3 to 11 disks, rectangles or digital disks ($r\le15$), this happens for about $60\%$ of the images. For example, in one image the opened area grows from 2053 to 2089 pixels between $r=8$ and $r=9$, and \texttt{scipy.ndimage}, \texttt{scikit-image} and OpenCV agree up to border conventions.
+We tested the condition ``$D_r$ is $D_s$-open'' for all pairs $1\le s<r\le40$, for the digital disks of \texttt{scikit-image}~\cite{vanderwalt2014} (\texttt{disk}, the Gauss digitisation $\{p:\|p\|\le r\}$) and of OpenCV~\cite{bradski2000} (\texttt{MORPH\_ELLIPSE}). As Table~\ref{tab:violation} shows, most pairs violate it, including most consecutive pairs. When $D_r$ is not $D_s$-open, $X\circ D_r\not\subseteq X\circ D_s$ for some $X$, and the size distribution $r\mapsto|X\circ D_r|$ can \emph{increase}, so the pattern spectrum takes negative values. On random $120\times120$ images made of 3 to 11 disks, rectangles or digital disks ($r\le15$), this happens for 63\% (scikit-image) and 60\% (OpenCV) of the images. For example, in one image the opened area grows from 2053 to 2089 pixels between $r=8$ and $r=9$, and \texttt{scipy.ndimage}, \texttt{scikit-image} and OpenCV agree up to border conventions.
 
 \begin{table}[t]
 \centering
@@ -78,7 +84,7 @@ One could try to extract a granulometric \emph{subsequence} of digital disks. Ov
 
 %===============================================================================
 \section{Lower Bounds}\label{sec:lower}
-Additivity~\eqref{eq:additive} turns roundness of every element of a chain into a constraint on the increments. If consecutive elements are both nearly round, every increment has small diameter, so all its edges are short lattice vectors. Short lattice vectors leave a gap of directions around each axis, and a polygon whose edges avoid an angular interval cannot be round.
+Additivity~\eqref{eq:additive} turns the roundness of two elements of a chain into a constraint on the increments between them. All edges of the increments are lattice vectors. If the increments are short, these vectors leave a gap of directions around each axis, and a polygon whose edges avoid an angular interval cannot be round.
 
 \begin{lemma}[direction gap]\label{lem:gap}
 Let $D\ge1$. No nonzero $(a,b)\in\Z^2$ with $a^2+b^2\le D^2$ has a direction angle in $(0,\arctan(1/D))$.
@@ -88,47 +94,48 @@ A direction in that interval requires $a>0$ and $b\ge1$, hence $b/a\ge1/a\ge1/D$
 \end{proof}
 
 \begin{theorem}\label{thm:lower}
-Let $(D_k)_{k=0}^K$ be a Minkowski chain in $\Z^2$ whose elements are $\varepsilon$-round with radii $\rho_k$, and let $D\ge1$ bound the diameters of its increments. With $\alpha=\arctan(1/D)$,
+Let $(D_k)_{k=0}^K$ be a Minkowski chain in $\Z^2$ whose increments have diameter at most $D\ge1$. If $D_0$ is $\varepsilon_0$-round with radius $\rho_0$ and $D_K$ is $\varepsilon_K$-round with radius $\rho_K$, then, with $c=1-\cos\bigl(\frac12\arctan\frac1D\bigr)$,
 \begin{equation}\label{eq:bound}
-8\varepsilon\ \ge\ 2\,(\rho_K-\rho_0-2\varepsilon)\,\bigl(1-\cos(\alpha/2)\bigr).
+4(\varepsilon_0+\varepsilon_K)\ \ge\ 2\,(\rho_K-\rho_0-\varepsilon_0-\varepsilon_K)\,c .
 \end{equation}
 \end{theorem}
 \begin{proof}
-\emph{Step 1.} Every edge of $\conv C_k$ is a lattice vector of norm at most $D$.
-\emph{Step 2.} Let $P=\sum_k\conv C_k$ and $Q=\frac12(P-P)$. By \eqref{eq:additive}, $W:=w_{D_K}-w_{D_0}=w_P=2h_Q$. The edges of the centrally symmetric polygon $Q$ are parallel to edges of the $\conv C_k$, so by Lemma~\ref{lem:gap} none has a direction in $(0,\alpha)$. Hence there is an interval $I$ of normal angles of length at least $\alpha$ on which a single vertex $q$ of $Q$ attains the support: $h_Q(\theta)=|q|\cos(\theta-\theta_q)$ on $I$.
-\emph{Step 3.} We may assume $\rho_K-\rho_0>2\varepsilon$, since otherwise \eqref{eq:bound} is trivial. Then $h_Q>0$, so $|\theta-\theta_q|<\pi/2$ on $I$, and on an interval of length $\alpha$ a cosine varies by at least $1-\cos(\alpha/2)$ times its amplitude. Since $|q|\ge\min h_Q=\frac12\min W\ge\rho_K-\rho_0-2\varepsilon$ by \eqref{eq:round}, we get $\max W-\min W\ge2(\rho_K-\rho_0-2\varepsilon)(1-\cos(\alpha/2))$.
-\emph{Step 4.} Finally $\max W-\min W\le\A(D_K)+\A(D_0)\le8\varepsilon$ by \eqref{eq:round}.\qed
+\emph{Step 1.} Every edge of $\conv C_k$ joins two lattice points, so it is a lattice vector of norm at most $D$.
+\emph{Step 2.} Let $P=\sum_k\conv C_k$ and $Q=\frac12(P-P)$. By \eqref{eq:additive}, $W:=w_{D_K}-w_{D_0}=w_P=2h_Q$. The edges of the centrally symmetric polygon $Q$ are parallel to edges of the $\conv C_k$, so by Lemma~\ref{lem:gap} (applied to $\pm e$) none has a direction in $(0,\alpha)$, where $\alpha=\arctan(1/D)$. The normal angles in $(\frac\pi2,\frac\pi2+\alpha)$ therefore belong to the normal cone of a single vertex $q$ of $Q$: $h_Q(\theta)=|q|\cos(\theta-\theta_q)$ on an interval $I$ of length at least $\alpha$.
+\emph{Step 3.} We may assume $s:=\rho_K-\rho_0-\varepsilon_0-\varepsilon_K>0$, since otherwise \eqref{eq:bound} is trivial. By \eqref{eq:round}, $\min W\ge2s$, so $h_Q>0$ and $|\theta-\theta_q|<\frac\pi2$ on $I$. On an interval of length $\alpha$ within $(\theta_q-\frac\pi2,\theta_q+\frac\pi2)$, the function $\cos(\theta-\theta_q)$ varies by at least $1-\cos(\alpha/2)$: by at least that much if $\theta_q\in I$, and by at least $1-\cos\alpha$ otherwise, by monotonicity. With $|q|\ge\min h_Q\ge s$ this gives $\max W-\min W\ge2sc$.
+\emph{Step 4.} Finally $\max W-\min W\le\A(D_K)+\A(D_0)\le4\varepsilon_K+4\varepsilon_0$ by \eqref{eq:round}.\qed
 \end{proof}
 
-Writing $c=1-\cos(\alpha/2)=\frac{1}{8D^2}(1+O(D^{-2}))$, \eqref{eq:bound} reads $\varepsilon\ge(\rho_K-\rho_0)\,c/(4+2c)$. Different constraints on the steps give different bounds on~$D$.
+Only the first and the last element enter the bound. For a chain starting from a single point ($\varepsilon_0=\rho_0=0$), \eqref{eq:bound} gives $\varepsilon_K\ge\rho_K\,c/(2+c)$, where $c=\frac{1}{8D^2}(1+O(D^{-2}))$: \emph{every} element is at least $(1-o(1))\,\rho/(16D^2)$ away from a disk. Different constraints on the steps bound $D$ in different ways.
 
 \begin{corollary}[mean-radius steps]\label{cor:mean}
-If $\bar r(C_k)\le\delta$ for all $k$, then $D\le\pi\delta$ and $\varepsilon\ge(1-o(1))\,(\rho_K-\rho_0)/(32\pi^2\delta^2)$ as $\delta\to\infty$. In particular, a granulometric chain with bounded steps has error growing linearly in the radius.
+If a Minkowski chain starting from a point has mean-radius steps $\bar r(C_k)\le\delta$, then $D\le\pi\delta$, and every element of radius $\rho$ has error $\varepsilon\ge\rho\,c/(2+c)=(1-o(1))\,\rho/(16\pi^2\delta^2)$, with $c=1-\cos(\frac12\arctan\frac1{\pi\delta})$. In particular, granulometric chains with bounded steps have error growing linearly with the radius.
 \end{corollary}
 \begin{proof}
 By Cauchy's formula the perimeter of a planar convex set is $\pi$ times its mean width, and it is at least twice its diameter. Hence $\diam\conv C_k\le\frac\pi2\cdot2\bar r(C_k)\le\pi\delta$.\qed
 \end{proof}
 
 \begin{corollary}[fitted-radius steps]\label{cor:fitted}
-If $\rho_k-\rho_{k-1}\le\Delta$ for all $k$, then $\varepsilon\ge(1-o(1))\,((\rho_K-\rho_0)/512)^{1/3}$ as $\rho_K\to\infty$.
+If all elements of a Minkowski chain are $\varepsilon$-round with radii satisfying $\rho_k-\rho_{k-1}\le\Delta$, then $\varepsilon\ge(1-o(1))\,((\rho_K-\rho_0)/512)^{1/3}$ as $\rho_K\to\infty$.
 \end{corollary}
 \begin{proof}
-By \eqref{eq:additive} and \eqref{eq:round}, $w_{C_k}=w_{D_k}-w_{D_{k-1}}\le2\Delta+4\varepsilon$, so $D\le2\Delta+4\varepsilon=4\varepsilon(1+o(1))$, since \eqref{eq:bound} forces $\varepsilon\to\infty$. Then \eqref{eq:bound} becomes $8\varepsilon\ge(\rho_K-\rho_0)/(64\varepsilon^2)\,(1+o(1))$.\qed
+By \eqref{eq:additive} and \eqref{eq:round}, $w_{C_k}=w_{D_k}-w_{D_{k-1}}\le2\Delta+4\varepsilon$, so $D\le2\Delta+4\varepsilon$. If $\varepsilon$ stayed bounded, then so would $D$, and \eqref{eq:bound} would force $\varepsilon\to\infty$. Hence $D=4\varepsilon(1+o(1))$, and \eqref{eq:bound} with $\varepsilon_0=\varepsilon_K=\varepsilon$ becomes $8\varepsilon\ge(\rho_K-\rho_0)/(64\varepsilon^2)\,(1+o(1))$.\qed
 \end{proof}
 
 \begin{corollary}[fixed library]\label{cor:library}
 Let $\mathcal L$ be a finite library containing a set with more than one point, and let
-\[\kappa(\mathcal L)=\min\Bigl\{\tfrac14\A\bigl(\textstyle\sum_C\lambda_Cw_C\bigr):\lambda\ge0,\ \min_u\textstyle\sum_C\lambda_Cw_C(u)=2\Bigr\}.\]
-Then $\kappa>0$, and every chain with library $\mathcal L$ satisfies $\varepsilon\ge\bigl(\kappa(\rho_K-\rho_0)-\frac14\A(D_0)\bigr)/(1+2\kappa)$.
+\[\kappa(\mathcal L)=\inf\Bigl\{\tfrac14\A\bigl(\textstyle\sum_C\lambda_Cw_C\bigr):\lambda\ge0,\ \min_u\textstyle\sum_C\lambda_Cw_C(u)=2\Bigr\}.\]
+Then $\kappa:=\kappa(\mathcal L)>0$, and the last element of every chain with library $\mathcal L$ satisfies $\varepsilon_K\ge\bigl(\kappa(\rho_K-\rho_0-\varepsilon_0)-\frac14\A(D_0)\bigr)/(1+\kappa)$, i.e.\ $\varepsilon\ge\frac{\kappa}{1+\kappa}\rho-O(1)$.
 \end{corollary}
 \begin{proof}
-$\sum_C\lambda_Cw_C$ is the width function of the polygon $\sum_C\lambda_C\conv C$, which does not have constant width because bodies of constant width are strictly convex~\cite{schneider2014}; by compactness $\kappa>0$. Write $W=w_{D_K}-w_{D_0}=\sum_Cn_Cw_C$ and $s=\frac12\min W\ge\rho_K-\rho_0-2\varepsilon$. Then $W/s$ is feasible, so $\A(W)\ge4\kappa s$, and $\A(W)\le4\varepsilon+\A(D_0)$.\qed
+For $\lambda$ in the simplex, $f(\lambda)=\A(\sum\lambda_Cw_C)/\min\sum\lambda_Cw_C$ takes values in $(0,\infty]$: $\sum\lambda_Cw_C$ is the width function of the polygon $\sum\lambda_C\conv C$, which does not have constant width, because bodies of constant width are strictly convex~\cite{schneider2014}. Moreover $f$ is continuous where finite and tends to $\infty$ where the minimum vanishes, so it attains a positive minimum, and $\kappa=\frac12\min f>0$. For the chain, write $W=w_{D_K}-w_{D_0}=\sum_Cn_Cw_C$ and $s=\frac12\min W\ge\rho_K-\rho_0-\varepsilon_0-\varepsilon_K$. Then $\A(W)\ge4\kappa s$ and $\A(W)\le4\varepsilon_K+\A(D_0)$.\qed
 \end{proof}
 
 \begin{table}[t]
 \centering
 \caption{Slope $\kappa$ of Corollary~\ref{cor:library} for classical libraries ($D_4$-images included). Segment libraries contain the 8-connected digital straight segments (DSS) or the periodic lines $\{0,v\}$ of all primitive $v$ with $\|v\|\le m$.}\label{tab:kappa}
-\begin{tabular}{lc@{\qquad}lc@{\qquad}lc}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lc@{\hspace{1.2em}}lc@{\hspace{1.2em}}lc}
 \toprule
 library & $\kappa$ & library & $\kappa$ & library & $\kappa$\\
 \midrule
@@ -138,59 +145,59 @@ $\{N_4,N_8\}$ (octagons) & 0.0412 & DSS, $m=10$ & 0.0028 & periodic, $m=5$ & 0.0
 \end{tabular}
 \end{table}
 
-$\kappa$ is a linear program over a fine grid of directions (Table~\ref{tab:kappa}). For example, $\kappa(\{N_4\})=(\sqrt2-1)/2$ is the anisotropy of the square. Corollary~\ref{cor:library} is tight for octagons: the best octagon chain has error $38.05$ at $\rho=1000$, matching the leading term $\frac{\kappa}{1+2\kappa}\rho=38.06$ up to the $O(1)$ correction.
-
-\paragraph{Higher dimensions.} In $\Z^n$ there is no ordering of directions, but a measure argument replaces Lemma~\ref{lem:gap}.
-
-\begin{theorem}\label{thm:zn}
-Let $(D_k)$ be a Minkowski chain in $\Z^n$, $n\ge2$, whose elements are $\varepsilon$-round (with respect to Euclidean balls) with radii $\rho_k$, and whose increments have diameter at most $D\ge1$. There are constants $b_n,c_n>0$ such that \eqref{eq:bound} holds with $\alpha/2$ replaced by $\alpha_n$, where $\sin\alpha_n=1/(4b_n(2D+1)^n)$. In particular $\varepsilon\ge c_n(\rho_K-\rho_0)D^{-2n}$. If the mean-radius steps are at most $\delta$, then $D\le2\delta/\mu_n$ with $\mu_n=\Gamma(\frac n2)/(\sqrt\pi\,\Gamma(\frac{n+1}2))$, and bounded steps again force linear growth.
-\end{theorem}
-\begin{proof}[sketch]
-The walls of the normal fan of $Q=\frac12(P-P)$ lie in the hyperplanes $e^\perp$ for the edges $e$ of the $\conv C_k$, i.e.\ lattice vectors with $\|e\|\le D$. There are at most $(2D+1)^n$ of them, and each band $\{u:|\langle u,e/\|e\|\rangle|<s\}$ has measure at most $b_ns$. So some $u_0$ satisfies $|\langle u_0,e\rangle|\ge2\sin\alpha_n\|e\|$ for all $e$, and the geodesic cap of radius $\alpha_n$ around $u_0$ meets no wall. On this cap $h_Q$ is linear, $h_Q(u)=\langle q,u\rangle$, and restricting to a great circle through $u_0$ and $q$ gives a variation of at least $|q|(1-\cos\alpha_n)$. Steps 3 and 4 are as in Theorem~\ref{thm:lower}. Finally, a segment of length $L$ has mean width $\mu_nL$.\qed
-\end{proof}
+We compute $\kappa$ by linear programming on a grid of 3600 directions (Table~\ref{tab:kappa}). Since the grid underestimates the anisotropy, the computed values are lower approximations, and the bounds remain valid. For example, $\kappa(\{N_4\})=(\sqrt2-1)/2$ is the anisotropy of the square. Corollary~\ref{cor:library} is tight for octagons: the element of fitted radius $961.5$ of the best octagon chain has $\varepsilon/\rho=0.039571$, while $\kappa/(1+\kappa)=0.039570$.
 
 %===============================================================================
-\section{A Matching Upper Bound}\label{sec:upper}
+\section{Matching Upper Bound and Higher Dimensions}\label{sec:upper}
 The lower bound is attained, up to constants, by a simple explicit chain. For $m\ge1$, let $V_m$ contain one vector from each pair $\pm v$ of integer points on the boundary of $[-m,m]^2$. These are $4m$ vectors of norm at most $\sqrt2m$, and consecutive directions differ by at most $\arctan(1/m)\le1/m$, the largest gap being between $(m,0)$ and $(m,1)$. Let $Z$ be the polygon circumscribed to the unit disk whose edges have the directions of $\pm V_m$; it is centrally symmetric, hence $Z=\sum_{v\in V_m}[-\frac{\ell_v}2\hat v,\frac{\ell_v}2\hat v]$ with $\hat v=v/\|v\|$, and $1\le h_Z\le\sec(\frac1{2m})$. For $t\ge0$ set $n_v(t)=\lfloor t\ell_v/\|v\|\rfloor$ and
 \[
 D(t)=\bigoplus_{v\in V_m}n_v(t)\{0,v\},
 \]
-the Minkowski sum of $n_v(t)$ copies of the periodic line $\{0,v\}$~\cite{jones1996}. As $t$ grows, the counts increase one at a time, so the elements $D(t)$ form a Minkowski chain of periodic lines.
+the Minkowski sum of $n_v(t)$ copies of the periodic line $\{0,v\}$~\cite{jones1996}. As $t$ grows, the counts increase. When several counts increase at the same $t$, we add the corresponding lines one at a time, so the elements form a Minkowski chain of periodic lines starting from $\{0\}$.
 
 \begin{theorem}\label{thm:upper}
-The chain $D(t)$ has mean-radius steps at most $\sqrt2m/\pi$, and every element is $\varepsilon$-round with radius $\rho$ and $\varepsilon\le\rho/(8m^2)+2m^2$.
+This chain has mean-radius steps at most $\sqrt2m/\pi$, and every element is $\varepsilon$-round with some radius $\rho$, with $\varepsilon\le\rho/(8m^2)+2m^2$.
 \end{theorem}
 \begin{proof}
-A step adds one periodic line, whose mean radius is $\|v\|/\pi\le\sqrt2m/\pi$. The centred support function of $\conv D(t)=\sum_vn_v[0,v]$ is $H=\sum_vn_v|\langle v,u\rangle|/2=t\,h_Z-\sum_v\varphi_v|\langle v,u\rangle|/2$ with $\varphi_v\in[0,1)$. Since $\sum_v\|v\|\le4\sqrt2m^2$ and $\sec y-1\le y^2$ for $y\le\frac12$, we get $t-2\sqrt2m^2\le H\le t+t/(4m^2)$. The disk of radius $\rho=(\max H+\min H)/2$ is therefore within $\varepsilon\le t/(8m^2)+\sqrt2m^2\le\rho/(8m^2)+2m^2$.\qed
+A step adds one periodic line, whose mean radius is $\|v\|/\pi\le\sqrt2m/\pi$. Every element, including those created when ties are broken, satisfies $n_v=t\ell_v/\|v\|-\varphi_v$ for some $t$ and $\varphi_v\in[0,1]$. The centred support function of $\conv D=\sum_vn_v[0,v]$ is therefore $H=\sum_vn_v|\langle v,u\rangle|/2=t\,h_Z-\sum_v\varphi_v|\langle v,u\rangle|/2$. Since $\sum_v\|v\|\le4\sqrt2m^2$ and $\sec y-1\le y^2$ for $y\le\frac12$, we get $t-2\sqrt2m^2\le H\le t+t/(4m^2)$. The disk of radius $\rho=(\max H+\min H)/2\ge t-2\sqrt2m^2$ is thus within $\varepsilon\le t/(8m^2)+\sqrt2m^2\le\rho/(8m^2)+\sqrt2m^2+\frac{\sqrt2}4\le\rho/(8m^2)+2m^2$.\qed
 \end{proof}
 
-With $\delta=\sqrt2m/\pi$, Theorem~\ref{thm:upper} gives $\varepsilon\le\rho/(4\pi^2\delta^2)+\pi^2\delta^2$, while Corollary~\ref{cor:mean} gives $\varepsilon\ge(1-o(1))\rho/(32\pi^2\delta^2)$. For $\rho\ge4\pi^4\delta^4$, where the constant term is dominated, the best achievable error is therefore $\Theta(\rho/\delta^2)$, with constants within a factor of $16$, and of $8$ asymptotically. Concatenating chains with $m_j=2^j$, each run up to $t_j\propto16^j$ on top of the frozen previous ones (anisotropies and radii add), yields a single chain with steps $O(\rho^{1/4})$ and error $O(\sqrt\rho)$. By Corollary~\ref{cor:mean}, $O(\sqrt\rho)$ is optimal for chains with steps $O(\rho^{1/4})$. Numerically (Fig.~\ref{fig:error}b), the fixed-$m$ chains have slope about $1/(18m^2)$, between the bounds $1/(64m^2)$ and $1/(8m^2)$, and the multiscale chain satisfies $\varepsilon\le0.28\sqrt\rho$ for $20\le\rho\le5\cdot10^4$.
+With $\delta=\sqrt2m/\pi$, Theorem~\ref{thm:upper} gives $\varepsilon\le\rho/(4\pi^2\delta^2)+\pi^2\delta^2$, while Corollary~\ref{cor:mean} gives $\varepsilon\ge(1-o(1))\,\rho/(16\pi^2\delta^2)$. For $\rho\ge4\pi^4\delta^4$, where the constant term is dominated, the best achievable error is therefore $\Theta(\rho/\delta^2)$, with constants within a factor of $8$, and of $4$ asymptotically. We can also concatenate chains with $m_j=2^j$, each run up to $t_j\propto16^j$ on top of the frozen previous ones; anisotropies and radii add. The result is a single chain with steps $O(\rho^{1/4})$ and error $O(\sqrt\rho)$, which is optimal for steps $O(\rho^{1/4})$ by Corollary~\ref{cor:mean}. Numerically (Fig.~\ref{fig:error}b), the fixed-$m$ chains have slope about $1/(18m^2)$, between the bounds $1/(32m^2)$ and $1/(8m^2)$, and the multiscale chain satisfies $\varepsilon\le0.28\sqrt\rho$ for $20\le\rho\le5\cdot10^4$.
 
 Like all our bounds, Theorem~\ref{thm:upper} concerns convex hulls. Minkowski sums of periodic lines can leave isolated holes, as Jones and Soille's decompositions also do~\cite{jones1996}. Adding the $2\times2$ square to the chain reduces them to $0.2$--$2\%$ of the hull's lattice points in our tests, and holes do not affect the granulometric property.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/error.pdf}
-\caption{(a) Error of practical families for $\rho\le48$ (radius steps below $2.2$). (b) Chains of Theorem~\ref{thm:upper} for $m=2,4,8$, with the upper bound of Theorem~\ref{thm:upper} (dashed) and the lower bound of Corollary~\ref{cor:mean} (dotted), and the multiscale chain against $0.3\sqrt\rho$.}\label{fig:error}
+\caption{(a) Error of practical families for $\rho\le48$; mean-radius steps are below $2.2$. (b) Chains of Theorem~\ref{thm:upper} for $m=2,4,8$, with the upper bound of Theorem~\ref{thm:upper} (dashed) and the lower bound of Corollary~\ref{cor:mean} (dotted), and the multiscale chain against $0.3\sqrt\rho$.}\label{fig:error}
 \end{figure}
+
+\paragraph{Higher dimensions.} In $\Z^n$ the directions are not ordered, but a measure argument replaces Lemma~\ref{lem:gap}. We state the result with unspecified constants; its exponent is not sharp, since for $n=2$ it gives $D^{-4}$ instead of $D^{-2}$.
+
+\begin{theorem}\label{thm:zn}
+Let $(D_k)$ be a Minkowski chain in $\Z^n$, $n\ge2$, whose increments have diameter at most $D\ge1$, and let $D_0$ and $D_K$ be $\varepsilon_0$- and $\varepsilon_K$-round (with respect to Euclidean balls). There are constants $b_n>0$ such that \eqref{eq:bound} holds with $c$ replaced by $1-\cos\alpha_n$, where $\sin\alpha_n=1/(4b_n(2D+1)^n)$. Hence $\varepsilon_K\ge c_n(\rho_K-\rho_0-\varepsilon_0)D^{-2n}-\varepsilon_0$. If the mean-radius steps are at most $\delta$, then $D\le2\delta/\mu_n$ with $\mu_n=\Gamma(\frac n2)/(\sqrt\pi\,\Gamma(\frac{n+1}2))$, and bounded steps again force linear growth.
+\end{theorem}
+\begin{proof}[sketch]
+The walls of the normal fan of $Q=\frac12(P-P)$ lie in the hyperplanes $e^\perp$ for the edges $e$ of the $\conv C_k$, i.e.\ lattice vectors with $\|e\|\le D$. There are at most $(2D+1)^n$ of them, and each band $\{u:|\langle u,e/\|e\|\rangle|<s\}$ of the sphere has measure at most $b_ns$. So some $u_0$ satisfies $|\langle u_0,e\rangle|\ge2\sin\alpha_n\|e\|$ for all $e$, and the geodesic cap of radius $\alpha_n$ around $u_0$ meets no wall. On this cap $h_Q(u)=\langle q,u\rangle$ is linear. Restricting it to the great circle through $u_0$ and $q$ gives a variation of at least $|q|(1-\cos\alpha_n)$, and Steps 3 and 4 are as before. Finally, a segment of length $L$ has mean width $\mu_nL$, and mean width is monotone under inclusion.\qed
+\end{proof}
 
 %===============================================================================
 \section{Practical Families and Experiments}\label{sec:experiments}
-\paragraph{Families.} Table~\ref{tab:families} compares families with radius steps below $2.2$, i.e.\ about one element per integer radius, for $\rho\le48$. For the fixed libraries (Bresenham/DSS segments as in~\cite{adams1993}, periodic lines as in~\cite{jones1996}), we use the optimal weights $\lambda^\ast$ of Corollary~\ref{cor:library}. We move towards the multiplicities $\operatorname{round}(t\lambda^\ast)$ one elementary set at a time, choosing at each step the set that keeps the element roundest; the chains contain the $2\times2$ square. We also include a chain of individual DSS computed by mixed-integer programming (HiGHS~\cite{huangfu2018}), which minimises the maximal error over $r\le48$. All elements of these granulometric families were verified to be hole-free. The optimised chains halve the error of octagons and reach about a third of that of Bresenham decompositions, but they remain three times less round than Gauss disks, in line with Sect.~\ref{sec:lower}. Relaxing the step size helps, as Theorem~\ref{thm:lower} predicts through $D$: with radius steps up to $4.1$, the 13-direction periodic chain reaches $0.41$. Conversely, if multiplicities could be real, a monotone family of DSS with $\|v\|\le45$ would have error at most $0.43$ on a grid of radii up to $2000$, as we found by solving a linear program; we do not claim that this persists for all radii. Integrality is what Step~1 of the proof exploits.
+\paragraph{Families.} Table~\ref{tab:families} compares families for $\rho\le48$ with mean-radius steps between $1.2$ and $2.2$, i.e.\ about one element per integer radius. For the fixed libraries (Bresenham/DSS segments as in~\cite{adams1993}, periodic lines as in~\cite{jones1996}), we use the optimal weights $\lambda^\ast$ of Corollary~\ref{cor:library}. We move towards the multiplicities $\operatorname{round}(t\lambda^\ast)$ one elementary set at a time, choosing at each step the set that keeps the element roundest; the chains contain the $2\times2$ square. We also include a chain of individual DSS computed by mixed-integer programming (HiGHS~\cite{huangfu2018}), which minimises the maximal error over $r\le48$. All elements of these granulometric families were verified to be hole-free. The optimised chains halve the error of octagons and reach about a third of that of Bresenham decompositions, but they remain three times less round than Gauss disks. At these radii Corollary~\ref{cor:mean} only forces $0.06$--$0.14$ for the steps in the table. The lower bound is far from binding for small disks, and its force lies in the growth rate at large radii (Fig.~\ref{fig:error}b). Relaxing the step size helps, as Theorem~\ref{thm:lower} predicts through $D$: with radius steps up to $4.1$, the 13-direction periodic chain reaches $0.41$. Conversely, if multiplicities could be real, a monotone family of DSS with $\|v\|\le45$ would have error at most $0.43$ on a grid of radii up to $2000$, as we found by solving a linear program; we do not claim that this persists for all radii. Integrality is what Step~1 of the proof exploits.
 
 \begin{table}[t]
 \centering
-\caption{Error $\varepsilon$ (pixels) of families for $\rho\le48$ with radius steps below $2.2$, and the largest radius reached with $\max\varepsilon\le1$.}\label{tab:families}
-\begin{tabular}{lcccc}
+\caption{Error $\varepsilon$ (pixels) of families for $\rho\le48$: largest mean-radius step $\delta$, maximum and mean error, and the largest radius reached with $\max\varepsilon\le1$.}\label{tab:families}
+\begin{tabular}{lccccc}
 \toprule
-family & granulometric & max $\varepsilon$ & mean $\varepsilon$ & $\rho$ at $\varepsilon\le1$\\
+family & gran. & max step $\delta$ & max $\varepsilon$ & mean $\varepsilon$ & $\rho$ at $\varepsilon\le1$\\
 \midrule
-Gauss disks (\texttt{disk}) & no & 0.35 & 0.21 & --\\
-octagons (neighbourhood seq.) & yes & 1.85 & 0.98 & 25\\
-Bresenham/DSS, 8 directions & yes & 3.27 & 1.75 & 12\\
-periodic lines, 8 dir., LP weights & yes & 1.09 & 0.60 & 41\\
-periodic lines, 13 dir., LP weights & yes & 1.04 & 0.48 & 46\\
-DSS, $\|v\|\le6$, MILP & yes & 1.00 & 0.57 & 44\\
+Gauss disks (\texttt{disk}) & no & 1.19 & 0.35 & 0.21 & --\\
+octagons (neighbourhood seq.) & yes & 2.17 & 1.85 & 0.98 & 25\\
+Bresenham/DSS, 8 directions & yes & 1.48 & 3.27 & 1.75 & 12\\
+periodic lines, 8 dir., LP weights & yes & 1.42 & 1.09 & 0.60 & 41\\
+periodic lines, 13 dir., LP weights & yes & 1.46 & 1.04 & 0.48 & 46\\
+DSS, $\|v\|\le6$, MILP & yes & 2.09 & 1.00 & 0.57 & 44\\
 \bottomrule
 \end{tabular}
 \end{table}
