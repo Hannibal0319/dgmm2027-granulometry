@@ -8,7 +8,7 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 ## Main results
 1. Standard digital disks are not granulometric (scikit-image: 73% of radius pairs violate absorption, OpenCV 81%;
    size distributions increase with r on ~60% of random images).
-2. Lower bound (Thm 1 + Cors): a Minkowski chain with mean-radius steps <= delta has every element has error >= rho/(16 pi^2 delta^2)
+2. Lower bound (Thm 1 + Cors): a Minkowski chain with mean-radius steps <= delta: every element has error >= rho/(16 pi^2 delta^2)
    (asymptotically) -> bounded steps force LINEAR anisotropy; fitted-radius steps -> rho^(1/3); fixed library ->
    slope kappa/(1+kappa) (LP), attained exactly by octagons.
 3. Matching upper bound (Thm 3): periodic lines on the boundary of [-m,m]^2 give eps <= rho/(8m^2) + 2m^2 with steps
