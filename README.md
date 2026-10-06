@@ -12,8 +12,11 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 2. **Theorem 1**: any Minkowski chain (octagons, periodic lines, Bresenham decompositions, ...) whose elements
    are all eps-round with radius steps <= Delta has eps >= c rho^(1/3); with a fixed library eps grows linearly
    (Corollary 2, slope kappa/(1+2kappa), tight for octagons).
-3. The real relaxation has bounded error (integrality is the obstruction); MILP-optimised unit-step chains halve
-   the error of octagons for r<=48 and halve the rotation sensitivity of size distributions.
+3. Constructions (radius steps < 2.2, r <= 48): LP-weighted periodic-line chains and MILP chains have max error ~1.0
+   vs 1.85 for octagons and 3.27 for Bresenham/DSS decompositions; up to r = 1000: 3.7 vs 38 (bound 0.47).
+   Real relaxation numerically bounded (0.43 up to r = 2000), not proven.
+4. Experiments: on rotated polygonal scenes the periodic chain is 3x less orientation dependent than octagons;
+   on three real images (nuclei, coins, gravel) all families are within resampling noise.
 
 ## Code (`granulo/`)
 | file | purpose |
@@ -28,6 +31,10 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `round_track2.py` | coarse chains for large radii (planned rounding) |
 | `curves.py` | Theorem 1 bound curve, octagon chain |
 | `families.py`, `exp_rotation.py` | exact morphology by cascades; rotation experiment |
+| `all_families.py` | all families of Table 3 (Gauss, octagons, Bresenham, periodic 8/13 dir., MILP), cached |
+| `periodic_large.py` | LP-weighted periodic chains up to r = 1000 (Fig. 1b) |
+| `exp_rotation2.py` | Table 4: rotation experiment, synthetic + real images |
+| `fig_final.py` | final figures (error, shapes, rotation) |
 | `verify_chain.py` | hole-freeness / openness / per-radius error of a computed chain |
 | `fig_main.py` | all figures (`python fig_main.py fig_error fig_rotation fig_shapes fig_violations`) |
 | `NOTES_theory.md` | proof notes |
