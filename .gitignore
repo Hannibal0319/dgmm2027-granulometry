@@ -1,5 +1,3 @@
-# dataset (download instructions in README)
-data/
 # python
 __pycache__/
 *.pyc

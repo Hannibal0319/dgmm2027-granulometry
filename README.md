@@ -4,8 +4,6 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 
 - `paper_granulo/` — **the submission** (`main.tex`, `refs.bib`, `figures/`; build with `latexmk -pdf main.tex`).
 - `granulo/` — all code and data for it (see table below).
-- `paper/`, `geodrec/`, `experiments/`, `tests/` — an earlier, abandoned direction (exact backprop through
-  morphological reconstruction); kept for reference only.
 
 ## Main results
 1. Standard digital disks are not granulometric: scikit-image `disk` violates "D_r is D_s-open" for 73% of
