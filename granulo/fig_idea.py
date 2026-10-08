@@ -12,9 +12,9 @@ from skimage.morphology import disk
 
 matplotlib.use("Agg")
 OUT = os.path.join(os.path.dirname(__file__), "..", "paper_granulo", "figures")
-plt.rcParams.update({"font.size": 8, "font.family": "serif"})
+plt.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42, "font.size": 8, "font.family": "serif"})
 
-fig, ax = plt.subplots(1, 3, figsize=(7.0, 2.35), gridspec_kw=dict(width_ratios=[1, 1, 1.15]))
+fig, ax = plt.subplots(1, 3, figsize=(5.0, 1.85), gridspec_kw=dict(width_ratios=[1, 1, 1.15]))
 
 # (a) violation
 r, s = 5, 4
@@ -25,10 +25,12 @@ img[B & O] = (0.55, 0.55, 0.55)
 img[B & ~O] = (0.85, 0.15, 0.15)
 a = ax[0]
 a.imshow(img, interpolation="nearest")
+ys_, xs_ = np.nonzero(B & ~O)
+a.plot(xs_, ys_, "x", color="w", ms=3.2, mew=0.8)  # second cue for black-and-white print
 a.set_xticks(np.arange(-.5, B.shape[1], 1), minor=True); a.set_yticks(np.arange(-.5, B.shape[0], 1), minor=True)
 a.grid(which="minor", color="w", lw=0.4); a.tick_params(which="both", length=0)
 a.set_xticks([]); a.set_yticks([])
-a.set_title("(a) disk$(5)\\circ$disk$(4)\\neq$disk$(5)$", fontsize=8)
+a.set_title("(a) disk$(5)\\circ$disk$(4)\\neq$disk$(5)$", fontsize=7)
 a.text(0.5, -0.08, "red: pixels not covered by\nany translate of disk(4) inside", transform=a.transAxes,
        ha="center", va="top", fontsize=6.5)
 
@@ -49,7 +51,7 @@ for th0 in (0, 90 - alpha, 90, 180 - alpha):
 a.annotate(r"gap $\arctan\frac{1}{\ell}$", xy=(0.93, 0.13), xytext=(0.35, -0.32), fontsize=7, color="C3",
            arrowprops=dict(arrowstyle="->", color="C3", lw=0.6))
 a.set_xlim(-1.08, 1.08); a.set_ylim(-0.45, 1.08); a.set_aspect("equal"); a.axis("off")
-a.set_title(r"(b) edge directions, $\|v\|\leq\ell=3$", fontsize=8)
+a.set_title(r"(b) directions, $\|v\|\leq 3$", fontsize=7)
 
 # (c) schematic: two consecutive edge normals separated by the gap alpha (exaggerated)
 a = ax[2]
@@ -71,13 +73,13 @@ w = Wedge((0, 0), 0.4, math.degrees(c0), math.degrees(c0 + al), color="C3", alph
 a.add_patch(w)
 a.text(0.0, 0.25, r"$\geq\alpha$", ha="center", fontsize=7, color="C3")
 a.annotate("", xy=q, xytext=(0, 1), arrowprops=dict(arrowstyle="<->", lw=0.7, color="C3"))
-a.text(0.06, 1.03, "vertex $q$:\nsupport sticks out", fontsize=6.5, color="C3")
-a.text(-1.02, 0.5, "disk", fontsize=7)
-a.text(-1.08, 1.14, "polygon edges", fontsize=7, color="C0")
+a.text(0.30, 1.13, "vertex $q$", fontsize=6.5, color="C3")
+a.text(-1.05, 0.45, "disk", fontsize=6.5)
+a.text(-1.08, 1.17, "polygon", fontsize=6.5, color="C0")
 a.set_xlim(-1.1, 1.1); a.set_ylim(0.0, 1.32); a.set_aspect("equal"); a.axis("off")
-a.set_title(r"(c) no edge in the gap $\Rightarrow$ not round", fontsize=8)
+a.set_title(r"(c) gap $\Rightarrow$ not round", fontsize=7)
 
 plt.tight_layout(w_pad=0.6)
-plt.savefig(os.path.join(OUT, "idea.pdf"), bbox_inches="tight")
-plt.savefig(os.path.join(OUT, "idea.png"), bbox_inches="tight", dpi=200)
+plt.savefig(os.path.join(OUT, "idea.pdf"), bbox_inches="tight", pad_inches=0.02)
+plt.savefig(os.path.join(OUT, "idea.png"), bbox_inches="tight", dpi=300)
 print("ok")

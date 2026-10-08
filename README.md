@@ -34,12 +34,13 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `periodic_large.py` | LP-weighted periodic chains up to r = 1000 (Fig. 1b) |
 | `exp_rotation2.py` | Table 4 (top): rotation experiment incl. sup-closure, synthetic + real images |
 | `exp_objects.py` | Table 4 (bottom): per-object sieve size vs inscribed radius |
+| `find_dois.py`, `verify_dois.py`, `add_dois.py` | DOI lookup and verification for `refs.bib` |
 | `nonmono_sup.py` | sup-closure vs single openings on the 400 random images (Table 1) |
 | `fig_rotation2.py` | Fig. 3 (rotation curves, 4 families) |
 | `fig_final.py` | final figures (error, shapes, rotation) |
 | `upper.py`, `upper_multi.py` | Theorem 3 construction: verification of bound, steps, gaps; multiscale O(sqrt rho) |
-| `fig_idea.py` | Fig. 1 (axiom violation example, direction gap, proof idea) |
-| `fig_bounds.py` | Fig. 1 (practical families; upper/lower bound sandwich) |
+| `fig_idea.py` | Fig. 1 (axiom violation example, direction gap, proof idea), print size |
+| `fig_bounds.py` | Fig. 2 (practical families; upper/lower bound sandwich), print size |
 | `verify_chain.py` | hole-freeness / openness / per-radius error of a computed chain |
 | `fig_main.py` | all figures (`python fig_main.py fig_error fig_rotation fig_shapes fig_violations`) |
 | `NOTES_theory.md` | proof notes |
@@ -53,3 +54,19 @@ then `python fig_main.py fig_error fig_rotation fig_shapes`.
 - Fill in authors/affiliations in `paper_granulo/main.tex` (currently anonymous; DGMM's anonymity policy was not stated).
 - Read the open question in Sect. 5 (hole-freeness conjecture) — a proof would strengthen the paper.
 - Optional: longer MILP runs (dual bound 0.32 vs 1.00 found for r<=48) could improve Fig. 2a.
+
+## Springer LNCS compliance (checked 2026-10-08)
+- Template: `llncs.cls` v2.25 (2026/09/03) and `splncs04.bst` from the Springer ZIP, copied into `paper_granulo/`;
+  preamble as in `samplepaper.tex` (T1, newtx fonts); no coloured text (hyperref `hidelinks`, URL style as in template).
+- Figures: vector PDF, drawn at final size (<= 12.2 cm wide, included unscaled), lettering >= 6 pt, TrueType fonts
+  (no Type 3), line styles/markers for black-and-white legibility; alt text via `\Description` (-> `DescriptionTexts.txt`).
+- Captions: figures below, tables above. Headings capitalised, two numbered levels. Abstract 202 words, keywords given.
+- `credits` block with Disclosure of Interests. References: splncs04, alphabetical, 12 DOIs verified against Crossref
+  (`granulo/verify_dois.py`); the remaining 5 (books, thesis, magazine) have no DOI.
+
+## Before submitting (TODO for the authors)
+- Fill in real author names (given name first), affiliations, e-mails and ORCIDs in `main.tex`; mark exactly one
+  corresponding author (e-mail mandatory). Check whether DGMM review is anonymous before adding names.
+- Decide on the AI-use statement required by Springer Nature's AI policy (placeholder comment in the `credits` block).
+- Optional acknowledgments (funding) in the `credits` block.
+- Submit `main.tex`, `refs.bib`, `main.bbl`, `llncs.cls`, `splncs04.bst`, `figures/*.pdf` and the PDF.
