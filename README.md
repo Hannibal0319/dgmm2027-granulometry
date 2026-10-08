@@ -39,6 +39,7 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `fig_rotation2.py` | Fig. 3 (rotation curves, 4 families) |
 | `fig_final.py` | final figures (error, shapes, rotation) |
 | `upper.py`, `upper_multi.py` | Theorem 3 construction: verification of bound, steps, gaps; multiscale O(sqrt rho) |
+| `figstyle.py` | shared figure style (fonts, sizes, one name/colour/line style per family) |
 | `fig_idea.py` | Fig. 1 (axiom violation example, direction gap, proof idea), print size |
 | `fig_bounds.py` | Fig. 2 (practical families; upper/lower bound sandwich), print size |
 | `verify_chain.py` | hole-freeness / openness / per-radius error of a computed chain |

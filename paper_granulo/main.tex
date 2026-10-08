@@ -90,16 +90,16 @@ Figure~\ref{fig:idea}(a) shows the smallest instance of the problem. We tested t
 
 \begin{table}[t]
 \centering
-\caption{Violations of the absorption condition by standard digital disks, $1\le s<r\le40$. Last row: the sup-closure (several elements per size).}\label{tab:violation}
+\caption{Standard digital disks violate the absorption condition ($1\le s<r\le40$), and size distributions computed with them increase on most random images. The sup-closure (Proposition~\ref{prop:sup}) never does}\label{tab:violation}
 \begin{tabular}{lccc}
 \toprule
- & violating & violating & images with non-\\
-family & pairs $(s,r)$ & pairs $(r-1,r)$ & monotone size distr.\\
+ & \multicolumn{2}{c}{pairs with $D_r$ not $D_s$-open} & images with an\\
+\cmidrule(lr){2-3}
+family & all $s<r$ & $s=r-1$ & increasing $|X\circ D_r|$\\
 \midrule
 \texttt{scikit-image} \texttt{disk} & 571/780 (73\%) & 30/39 & 253/400\\
 OpenCV \texttt{MORPH\_ELLIPSE} & 628/780 (81\%) & 36/39 & 241/400\\
-\midrule
-sup-closure of \texttt{disk} (Prop.~\ref{prop:sup}) & \multicolumn{2}{c}{not applicable} & 0/400\\
+sup-closure of \texttt{disk} & -- & -- & 0/400\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -174,15 +174,15 @@ This chain has mean-radius steps at most $\sqrt2m/\pi$, and every element is $\v
 A step adds one periodic line, whose mean radius is $\|v\|/\pi\le\sqrt2m/\pi$. Every element, including those created when ties are broken, satisfies $n_v=t\ell_v/\|v\|-\varphi_v$ for some $t$ and $\varphi_v\in[0,1]$. The centred support function of $\conv D=\sum_vn_v[0,v]$ is therefore $H=\sum_vn_v|\langle v,u\rangle|/2=t\,h_Z-\sum_v\varphi_v|\langle v,u\rangle|/2$. Since $\sum_v\|v\|\le4\sqrt2m^2$ and $\sec y-1\le y^2$ for $y\le\frac12$, we get $t-2\sqrt2m^2\le H\le t+t/(4m^2)$. The disk of radius $\rho=(\max H+\min H)/2\ge t-2\sqrt2m^2$ is thus within $\varepsilon\le t/(8m^2)+\sqrt2m^2\le\rho/(8m^2)+\sqrt2m^2+\frac{\sqrt2}4\le\rho/(8m^2)+2m^2$.\qed
 \end{proof}
 
-With $\delta=\sqrt2m/\pi$, Theorem~\ref{thm:upper} gives $\varepsilon\le\rho/(4\pi^2\delta^2)+\pi^2\delta^2$, while Corollary~\ref{cor:mean} gives $\varepsilon\ge(1-o(1))\,\rho/(16\pi^2\delta^2)$. For $\rho\ge4\pi^4\delta^4$, where the constant term is dominated, the best achievable error is therefore $\Theta(\rho/\delta^2)$, with constants within a factor of $8$, and of $4$ asymptotically. We can also concatenate chains with $m_j=2^j$, each run up to $t_j\propto16^j$ on top of the frozen previous ones; anisotropies and radii add. The result is a single chain with steps $O(\rho^{1/4})$ and error $O(\sqrt\rho)$, which is optimal for steps $O(\rho^{1/4})$ by Corollary~\ref{cor:mean}. Numerically (Fig.~\ref{fig:error}b), the fixed-$m$ chains have slope about $1/(18m^2)$, between the bounds $1/(32m^2)$ and $1/(8m^2)$, and the multiscale chain satisfies $\varepsilon\le0.28\sqrt\rho$ for $20\le\rho\le5\cdot10^4$.
+With $\delta=\sqrt2m/\pi$, Theorem~\ref{thm:upper} gives $\varepsilon\le\rho/(4\pi^2\delta^2)+\pi^2\delta^2$, while Corollary~\ref{cor:mean} gives $\varepsilon\ge(1-o(1))\,\rho/(16\pi^2\delta^2)$. For $\rho\ge4\pi^4\delta^4$, where the constant term is dominated, the best achievable error is therefore $\Theta(\rho/\delta^2)$, with constants within a factor of $8$, and of $4$ asymptotically. We can also concatenate chains with $m_j=2^j$, each run up to $t_j\propto16^j$ on top of the frozen previous ones; anisotropies and radii add. The result is a single chain with steps $O(\rho^{1/4})$ and error $O(\sqrt\rho)$, which is optimal for steps $O(\rho^{1/4})$ by Corollary~\ref{cor:mean}. Numerically (Fig.~\ref{fig:error}b,c), the fixed-$m$ chains have slope about $1/(18m^2)$, between the bounds $1/(32m^2)$ and $1/(8m^2)$, and the multiscale chain satisfies $\varepsilon\le0.28\sqrt\rho$ for $20\le\rho\le5\cdot10^4$.
 
 Like all our bounds, Theorem~\ref{thm:upper} concerns convex hulls. Sums of periodic lines can leave isolated holes, as in~\cite{jones1996}. Adding the $2\times2$ square reduces them to $0.2$--$2\%$ of the hull's lattice points, and holes do not affect the granulometric property.
 
 \begin{figure}[t]
 \centering
 \includegraphics{figures/error.pdf}
-\Description{Two line plots. (a) Error in pixels against radius up to 48 for six families: Gauss disks stay near 0.2, the periodic-line and DSS chains reach about 1, octagons about 1.9 and Bresenham chains about 3.2. (b) Log-log plot of error against radius up to 3000 for the chains of Theorem 2 with m equal to 2, 4 and 8, each lying between its dashed upper bound and dotted lower bound, and a multiscale chain following 0.3 times the square root of the radius.}
-\caption{(a) Error of practical families for $\rho\le48$; mean-radius steps are below $2.2$. (b) Chains of Theorem~\ref{thm:upper} for $m=2,4,8$, with the upper bound of Theorem~\ref{thm:upper} (dashed) and the lower bound of Corollary~\ref{cor:mean} (dotted), and the multiscale chain against $0.3\sqrt\rho$.}\label{fig:error}
+\Description{Three line plots of error against radius. (a) Radius up to 48, six families: Gauss disks stay near 0.2, the periodic-line and DSS chains reach about 1, octagons about 1.9 and Bresenham chains about 3.2. (b) Log-log, radius up to 3000: the chains of Theorem 2 with m equal to 2 and 8, each lying between its dashed upper bound and dotted lower bound. (c) Log-log: the multiscale chain stays just below 0.3 times the square root of the radius.}
+\caption{Roundness error $\varepsilon$ of single-element chains. (a) Practical families (mean-radius steps below $2.2$); Gauss disks for reference. (b) Chains of Theorem~\ref{thm:upper} for $m=2,8$ (solid) lie between the upper bound of Theorem~\ref{thm:upper} (dashed) and the lower bound of Corollary~\ref{cor:mean} (dotted), both growing linearly. (c) The multiscale chain grows only like $\sqrt\rho$}\label{fig:error}
 \end{figure}
 
 \paragraph{Higher dimensions.} In $\Z^n$ the directions are not ordered, but a measure argument replaces Lemma~\ref{lem:gap}. We state the result with unspecified constants; its exponent is not sharp, since for $n=2$ it gives $\ell^{-4}$ instead of $\ell^{-2}$.
@@ -200,18 +200,20 @@ The directions $u$ split into regions in each of which a single vertex of $Q=\fr
 
 \begin{table}[t]
 \centering
-\caption{Families for $\rho\le48$: largest mean-radius step $\delta$, maximum and mean error, and the largest radius reached with $\max\varepsilon\le1$. The sup-closure uses several elements per size.}\label{tab:families}
+\caption{Roundness of the families for $\rho\le48$ (error $\varepsilon$ in pixels). The last column is the largest radius up to which $\varepsilon\le1$. All families except the first are granulometries; the sup-closure uses several elements per size, the others one}\label{tab:families}
 \begin{tabular}{lccccc}
 \toprule
-family & gran. & max step $\delta$ & max $\varepsilon$ & mean $\varepsilon$ & $\rho$ at $\varepsilon\le1$\\
+ & granulo- & largest & \multicolumn{2}{c}{error $\varepsilon$} & radius with\\
+\cmidrule(lr){4-5}
+family & metry & step $\delta$ & max & mean & $\varepsilon\le1$\\
 \midrule
-Gauss disks (\texttt{disk}) & no & 1.19 & 0.35 & 0.21 & --\\
+Gauss disks (single) & no & 1.19 & 0.35 & 0.21 & --\\
 sup-closure of Gauss disks & yes & 1.19 & 0.35 & 0.21 & $\ge48$\\
-octagons (neighbourhood seq.) & yes & 2.17 & 1.85 & 0.98 & 25\\
-Bresenham/DSS, 8 directions & yes & 1.48 & 3.27 & 1.75 & 12\\
-periodic lines, 8 dir., LP weights & yes & 1.42 & 1.09 & 0.60 & 41\\
-periodic lines, 13 dir., LP weights & yes & 1.46 & 1.04 & 0.48 & 46\\
-DSS, $\|v\|\le6$, MILP & yes & 2.09 & 1.00 & 0.57 & 44\\
+octagons & yes & 2.17 & 1.85 & 0.98 & 25\\
+Bresenham/DSS, 8 dir. & yes & 1.48 & 3.27 & 1.75 & 12\\
+periodic lines, 8 dir. & yes & 1.42 & 1.09 & 0.60 & 41\\
+periodic lines, 13 dir. & yes & 1.46 & 1.04 & 0.48 & 46\\
+DSS chain, MILP & yes & 2.09 & 1.00 & 0.57 & 44\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -220,23 +222,25 @@ Table~\ref{tab:families} and Fig.~\ref{fig:error}(a) summarise roundness. Among 
 
 \paragraph{Size distributions under rotation.} For each scene $X$, rotated by every multiple of $5^\circ$ up to $45^\circ$, we compute $F_\theta(r)=|\gamma_r(X_\theta)|/|X_\theta|$, implementing openings by chain elements as cascades of erosions and dilations by their elementary sets. We report the rotation sensitivity $S=\operatorname{mean}_r\operatorname{std}_\theta F_\theta(r)$ and the number of increases $F_\theta(r+1)>F_\theta(r)$, which are impossible for a granulometry. The scenes are nine squares of sides 17 to 81 pixels, rasterised exactly after rotation ($r\le40$), and three real images from \texttt{scikit-image}: fluorescence microscopy of nuclei (\texttt{human\_mitosis}, $r\le15$), \texttt{coins} ($r\le30$), and a material texture (\texttt{gravel}, $r\le20$). The real images are smoothed, rotated with bilinear interpolation, and thresholded at the Otsu level of the unrotated image.
 
-\paragraph{Per-object sieve size.} Sieving assigns to each object $O$ the size $s(O)=\max\{r:\gamma_r(X)\cap O\ne\emptyset\}$ of the largest element that fits inside it, which is the same for Gauss disks and their sup-closure. We compare $s(O)$ with the Euclidean inscribed radius, the maximum of the distance transform in $O$. We report the mean relative error and the mean standard deviation of $s(O)$ under rotation, relative to the inscribed radius, on objects matched by centroid.
+\paragraph{Per-object sieve size.} Sieving assigns to each object $O$ the size $s(O)=\max\{r:\gamma_r(X)\cap O\ne\emptyset\}$ of the largest element that fits inside it, which is the same for Gauss disks and their sup-closure. We compare $s(O)$ with the Euclidean inscribed radius, the maximum of the distance transform in $O$. We report the mean relative error and the mean standard deviation of $s(O)$ under rotation, relative to the inscribed radius, on objects matched by centroid; one merged object larger than the tested radii is excluded.
 
 \begin{table}[t]
 \centering
-\caption{Top: rotation sensitivity $S$ ($\times10^3$) of size distributions; in parentheses, the number of increases when nonzero. Bottom: per-object sieve size on \texttt{coins} (21 objects, inscribed radius 18--30 pixels; one merged object larger than the tested radii is excluded), error and rotation standard deviation in \% of the inscribed radius.}\label{tab:rotation}
-\setlength{\tabcolsep}{3.2pt}
-\begin{tabular}{lccccccc}
+\caption{Behaviour under rotation; lower is better everywhere. Left: rotation sensitivity $S$ ($\times10^3$) of the size distributions, with the number of increases in parentheses when nonzero. Right: sieve size of the 21 objects of \texttt{coins} (inscribed radius 18--30 pixels), in \% of the inscribed radius}\label{tab:rotation}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
 \toprule
- & Gauss & sup-cl. & octag. & DSS 8 & per. 8 & per. 13 & MILP\\
+ & \multicolumn{4}{c}{rotation sensitivity $S$ ($\times10^3$)} & \multicolumn{2}{c}{\texttt{coins}, per object}\\
+\cmidrule(lr){2-5}\cmidrule(lr){6-7}
+family & squares & nuclei & coins & gravel & error & rot.\ std\\
 \midrule
-squares (synthetic) & 4.0 (17) & 4.0 & 30.2 & 13.3 & 11.8 & 9.5 & 17.6\\
-nuclei (microscopy) & 1.7 & 1.7 & 1.9 & 1.9 & 2.0 & 1.6 & 1.4\\
-coins & 5.0 & 5.0 & 5.0 & 6.4 & 4.2 & 5.0 & 6.2\\
-gravel & 1.4 & 1.4 & 1.3 & 1.6 & 1.1 & 1.6 & 1.2\\
-\midrule
-coins: size error (\%) & 2.8 & 2.8 & 4.8 & 5.7 & 4.6 & 4.1 & 3.8\\
-coins: rotation std (\%) & 0.65 & 0.65 & 1.13 & 1.20 & 1.06 & 0.54 & 1.00\\
+Gauss disks (single) & 4.0 (17) & 1.7 & 5.0 & 1.4 & 2.8 & 0.65\\
+sup-closure of Gauss disks & 4.0 & 1.7 & 5.0 & 1.4 & 2.8 & 0.65\\
+octagons & 30.2 & 1.9 & 5.0 & 1.3 & 4.8 & 1.13\\
+Bresenham/DSS, 8 dir. & 13.3 & 1.9 & 6.4 & 1.6 & 5.7 & 1.20\\
+periodic lines, 8 dir. & 11.8 & 2.0 & 4.2 & 1.1 & 4.6 & 1.06\\
+periodic lines, 13 dir. & 9.5 & 1.6 & 5.0 & 1.6 & 4.1 & 0.54\\
+DSS chain, MILP & 17.6 & 1.4 & 6.2 & 1.2 & 3.8 & 1.00\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -244,8 +248,8 @@ coins: rotation std (\%) & 0.65 & 0.65 & 1.13 & 1.20 & 1.06 & 0.54 & 1.00\\
 \begin{figure}[t]
 \centering
 \includegraphics{figures/rotation.pdf}
-\Description{Four small plots of the fraction of area surviving opening against radius from 0 to 40, one curve per rotation angle from 0 to 45 degrees. For single Gauss-disk openings and their sup-closure the curves almost coincide; the single openings show small increases. For octagons the curves spread visibly; for the 13-direction periodic chain they spread much less.}
-\caption{Size distributions of the rotated synthetic scene, one curve per angle. Single openings by Gauss disks are nearly isotropic but non-monotone. Their sup-closure removes the increases and keeps the isotropy. Octagons are monotone but orientation dependent, and the 13-direction periodic chain reduces this dependence by a factor of three.}\label{fig:rotation}
+\Description{Four small plots of the fraction of area surviving opening against radius from 0 to 40, one curve per rotation angle from 0 to 45 degrees. For single Gauss-disk openings and their sup-closure the curves almost coincide; the single openings have 17 small increases, marked with red circles. For octagons the curves spread visibly; for the 13-direction periodic chain they spread much less.}
+\caption{Size distributions $F_\theta$ of the rotated squares scene, one curve per angle $\theta$. (a) Single openings by Gauss disks are nearly isotropic but increase 17 times (circles). (b) Their sup-closure removes the increases and keeps the isotropy. (c) Octagons are monotone but orientation dependent; (d) the 13-direction periodic chain reduces this dependence by a factor of three}\label{fig:rotation}
 \end{figure}
 
 \paragraph{Results.} Table~\ref{tab:rotation} and Fig.~\ref{fig:rotation} confirm the picture from the theory.
