@@ -23,15 +23,12 @@
 \begin{document}
 \title{Disk Granulometries on the Digital Grid:\\ Why a Single Structuring Element Is Not Enough}
 \titlerunning{Disk Granulometries on the Digital Grid}
-% TODO before submission: full names, ORCIDs, affiliations and e-mail addresses
-% (corresponding author's e-mail is mandatory; exactly one corresponding author)
-\author{First Author\inst{1}\orcidID{0000-0000-0000-0000} \and
-Second Author\inst{2}\orcidID{0000-0000-0000-0000}}
-\authorrunning{F. Author and S. Author}
-\institute{Institution, Address, Country\\
-\email{first.author@example.org} \and
-Institution, Address, Country\\
-\email{second.author@example.org}}
+% Single author = corresponding author. TODO: e-mail address (mandatory); ORCID optional:
+% add \orcidID{xxxx-xxxx-xxxx-xxxx} after the name.
+\author{Peter Zsoldos}
+\authorrunning{P. Zsoldos}
+\institute{Tampere University, Tampere, Finland\\
+\email{TODO@tuni.fi}}
 \maketitle
 
 \begin{abstract}
@@ -272,11 +269,14 @@ Our code and the computed chains are available\footnote{Repository link withheld
 Opening by each digital disk of a library is not a granulometry, and its size distributions can increase. The classical sup-closure fixes this at no cost and should be used instead. Single-element families cannot do as well: with mean-radius steps $\delta$, their error is $\Theta(\rho/\delta^2)$, and bounded steps force linear growth in every dimension. Open questions: the optimal rate when only the fitted radius has bounded steps, between $\rho^{1/3}$ and $\rho^{1/2}$; whether single-element granulometries that are not Minkowski chains, built from unions of translates as in~\cite{normand2003}, can escape the bound; and matching upper bounds in $\Z^3$.
 
 \begin{credits}
-% TODO: optional acknowledgments (e.g. funding) go here as \subsubsection{\ackname} ...
-% TODO: Springer Nature's AI policy asks that substantial use of AI tools (e.g. large
-% language models) be documented in the manuscript; decide on a statement before submission.
+\subsubsection{\ackname}
+This work was supported by an Erasmus Mundus Joint Master (EMJM) scholarship in Imaging, funded by the European Union.
+
+\subsubsection{Use of AI Tools.}
+Claude (Anthropic), a large language model, was used to assist with the literature search, the implementation and execution of the experiments, the derivation and checking of the proofs, and the drafting and editing of the manuscript. The author reviewed all content and takes full responsibility for it.
+
 \subsubsection{\discintname}
-The authors have no competing interests to declare that are relevant to the content of this article.
+The author has no competing interests to declare that are relevant to the content of this article.
 \end{credits}
 
 \bibliographystyle{splncs04}

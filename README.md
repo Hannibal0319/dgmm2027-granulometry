@@ -64,9 +64,9 @@ then `python fig_main.py fig_error fig_rotation fig_shapes`.
 - `credits` block with Disclosure of Interests. References: splncs04, alphabetical, 12 DOIs verified against Crossref
   (`granulo/verify_dois.py`); the remaining 5 (books, thesis, magazine) have no DOI.
 
-## Before submitting (TODO for the authors)
-- Fill in real author names (given name first), affiliations, e-mails and ORCIDs in `main.tex`; mark exactly one
-  corresponding author (e-mail mandatory). Check whether DGMM review is anonymous before adding names.
-- Decide on the AI-use statement required by Springer Nature's AI policy (placeholder comment in the `credits` block).
-- Optional acknowledgments (funding) in the `credits` block.
+## Before submitting (TODO)
+- Author: Peter Zsoldos, Tampere University (single and corresponding author) -- DONE.
+- Corresponding e-mail address is still a placeholder (`TODO@tuni.fi`) in `main.tex` -- mandatory.
+- Optional: ORCID (`\orcidID{...}` after the name); grant number / exact programme name in the acknowledgments.
+- Funding (EMJM in Imaging) and AI-use statement (Claude) are in the `credits` block -- DONE.
 - Submit `main.tex`, `refs.bib`, `main.bbl`, `llncs.cls`, `splncs04.bst`, `figures/*.pdf` and the PDF.
