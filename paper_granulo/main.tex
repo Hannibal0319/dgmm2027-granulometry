@@ -262,7 +262,7 @@ The anisotropy of single-element families matters most for large or polygonal ob
 \item To compute size distributions or pattern spectra with disks, do not open by each library disk separately. Use the sup-closure of Proposition~\ref{prop:sup}: open by every radius from the largest down and accumulate the unions. This costs nothing extra and yields a correct and round granulometry.
 \item Only if a single structuring element per size is required, e.g.\ to implement each opening as a fixed cascade of two-point erosions and dilations whose cost grows linearly rather than quadratically with the radius, use a Minkowski chain with LP weights. It improves on octagons and Bresenham decompositions, but not on the sup-closure: up to radius $50$, the 13-direction periodic chain has error at most $1.04$ pixels, and larger radii need larger libraries (Fig.~\ref{fig:error}b).
 \end{itemize}
-Our code and the computed chains are available\footnote{Repository link withheld for review.}.
+The code and the computed chains are available at \url{https://github.com/Hannibal0319/dgmm2027-granulometry}.
 
 %===============================================================================
 \section{Conclusion}
