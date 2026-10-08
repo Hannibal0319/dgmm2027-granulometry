@@ -36,6 +36,9 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `exp_objects.py` | Table 4 (bottom): per-object sieve size vs inscribed radius |
 | `find_dois.py`, `verify_dois.py`, `add_dois.py` | DOI lookup and verification for `refs.bib` |
 | `survey_tools.py` | software survey: Scientific Python Lectures code and DIPlib 3.6.1 `Granulometry` on the 400 random images (253/400, 155/400, 48/400 non-monotone) |
+| `survey_real.py` | DIPlib and Lectures code on real sample images (almost monotone) |
+| `survey_kinds.py` | which objects cause increases: digital disks 92%, real-valued disks 31% (small), rectangles 0% |
+| `survey_3d.py` | 3D digital balls (96/105 pairs violate absorption) and random ball packings (0/100 non-monotone) |
 | `nonmono_sup.py` | sup-closure vs single openings on the 400 random images (Table 1) |
 | `fig_rotation2.py` | Fig. 3 (rotation curves, 4 families) |
 | `fig_final.py` | final figures (error, shapes, rotation) |
