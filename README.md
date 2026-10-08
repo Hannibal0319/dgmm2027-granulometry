@@ -66,7 +66,7 @@ then `python fig_main.py fig_error fig_rotation fig_shapes`.
 
 ## Before submitting (TODO)
 - Author: Peter Zsoldos, Tampere University (single and corresponding author) -- DONE.
-- Corresponding e-mail address is still a placeholder (`TODO@tuni.fi`) in `main.tex` -- mandatory.
+- Corresponding e-mail: peter.zsoldos@tuni.fi -- DONE.
 - Optional: ORCID (`\orcidID{...}` after the name); grant number / exact programme name in the acknowledgments.
 - Funding (EMJM in Imaging) and AI-use statement (Claude) are in the `credits` block -- DONE.
 - Submit `main.tex`, `refs.bib`, `main.bbl`, `llncs.cls`, `splncs04.bst`, `figures/*.pdf` and the PDF.
