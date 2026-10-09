@@ -45,7 +45,8 @@ Deadlines: abstract **Oct 16, 2026**, paper **Oct 23, 2026** (LNCS, max 12 pages
 | `upper.py`, `upper_multi.py` | Theorem 3 construction: verification of bound, steps, gaps; multiscale O(sqrt rho) |
 | `fig_spectrum.py` | Fig. 3 (negative pattern spectrum of single disk openings vs sup-closure; rotation spread) |
 | `figstyle.py` | shared figure style (fonts, sizes, one name/colour/line style per family) |
-| `fig_idea.py` | Fig. 1 (axiom violation example, direction gap, proof idea), print size |
+| `fig_overview.py` | Fig. 1 (overview: single openings, sup-closure, octagon chain error, direction gap) |
+| `fig_idea.py` | former Fig. 1 (not used in the paper) | Fig. 1 (axiom violation example, direction gap, proof idea), print size |
 | `fig_bounds.py` | Fig. 2 (practical families; upper/lower bound sandwich), print size |
 | `verify_chain.py` | hole-freeness / openness / per-radius error of a computed chain |
 | `fig_main.py` | all figures (`python fig_main.py fig_error fig_rotation fig_shapes fig_violations`) |
