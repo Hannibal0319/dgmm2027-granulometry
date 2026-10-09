@@ -38,9 +38,8 @@ a.set_xlabel(r"radius $\rho$")
 a.set_ylabel(r"error $\varepsilon$ (pixels)")
 a.set_title(r"(a) practical families")
 a.set_xlim(0, 50)
-a.set_ylim(0, 3.4)
-a.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.45, -0.25), ncol=1, handlelength=2.2,
-         labelspacing=0.25)
+a.set_ylim(0, 5.0)
+a.legend(frameon=False, loc="upper left", handlelength=2.0, labelspacing=0.2, borderaxespad=0.1, fontsize=6)
 
 # (b) fixed-m chains of Theorem 2 between their bounds
 a = ax[1]
@@ -57,14 +56,14 @@ for m, (c, mk) in marks.items():
     delta = math.sqrt(2) * mm / math.pi
     a.loglog(rr, rr / (8 * mm * mm) + 2 * mm * mm, color=c, lw=0.6, ls="--")
     a.loglog(rr, [lb_mean_step(x, delta) for x in rr], color=c, lw=0.6, ls=":")
-a.plot([], [], color="0.3", ls="--", lw=0.6, label="upper bound (Thm. 2)")
-a.plot([], [], color="0.3", ls=":", lw=0.6, label="lower bound (Cor. 1)")
+a.plot([], [], color="0.3", ls="--", lw=0.6, label="upper (Thm. 2)")
+a.plot([], [], color="0.3", ls=":", lw=0.6, label="lower (Cor. 1)")
 a.set_ylim(1e-2, 300)
 a.set_xlim(5, 3000)
 a.set_xlabel(r"radius $\rho$")
 a.set_title("(b) chains with fixed $m$")
-a.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=1, handlelength=2.2,
-         labelspacing=0.25)
+a.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=2, handlelength=1.8,
+         labelspacing=0.25, columnspacing=0.8, fontsize=6)
 
 # (c) multiscale chain
 a = ax[2]
@@ -78,8 +77,7 @@ a.set_ylim(1e-1, 100)
 a.set_xlim(5, 3000)
 a.set_xlabel(r"radius $\rho$")
 a.set_title("(c) multiscale chain")
-a.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=1, handlelength=2.2,
-         labelspacing=0.25)
+a.legend(frameon=False, loc="upper left", handlelength=2.0, labelspacing=0.2, borderaxespad=0.1, fontsize=6)
 
 plt.savefig(os.path.join(OUT, "error.pdf"), bbox_inches="tight", pad_inches=0.02)
 plt.savefig(os.path.join(OUT, "error.png"), bbox_inches="tight", dpi=300)
