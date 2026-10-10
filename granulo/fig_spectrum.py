@@ -58,7 +58,9 @@ assert (ps_sup >= 0).all()
 rb = int(np.argmax(np.diff(a))) + 1  # opening by D_rb keeps more than opening by D_(rb-1)
 print(f"neg/pos = {score:.3f}; largest increase r={rb - 1}->{rb}: {int(a[rb - 1])} -> {int(a[rb])}")
 
-fig, ax = plt.subplots(1, 3, figsize=(4.8, 1.6), gridspec_kw=dict(width_ratios=[0.9, 1.2, 1.2], wspace=0.5))
+fig = plt.figure(figsize=(4.6, 1.95))
+gs = fig.add_gridspec(2, 2, width_ratios=[0.8, 1.4], wspace=0.35, hspace=1.1)
+ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])]
 
 # (a) image: light grey X, dark grey X o D_(rb-1), red = in X o D_rb but not in X o D_(rb-1)
 p = ax[0]
@@ -94,6 +96,7 @@ p.set_ylabel("spectrum (pixels)")
 p.set_title("(b) pattern spectrum")
 p.legend(frameon=False, loc="upper left", handlelength=1.2, labelspacing=0.2, borderaxespad=0.1, fontsize=6)
 p.set_xlim(-0.8, R - 0.2)
+p.set_xticks([0, 5, 10, 14])
 
 # (c) rotation spread of the size distributions of the rotated squares scene
 p = ax[2]
@@ -104,7 +107,7 @@ for k, (lab, c, ls) in sty.items():
     F = np.array(res[k]["F"])
     p.plot(np.arange(F.shape[1]), F.max(axis=0) - F.min(axis=0), color=c, ls=ls, lw=0.9, label=lab)
 p.set_xlabel("radius $r$")
-p.set_ylabel(r"spread of $F_\theta(r)$ over $\theta$")
+p.set_ylabel(r"spread of $F_\theta(r)$")
 p.set_title("(c) rotation spread")
 p.legend(frameon=False, loc="upper left", handlelength=2.0, labelspacing=0.2, borderaxespad=0.1, fontsize=6)
 p.set_xlim(0, 40)

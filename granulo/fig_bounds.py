@@ -17,7 +17,9 @@ from figstyle import FAMILY
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "paper_granulo", "figures")
 
-fig, ax = plt.subplots(1, 3, figsize=(4.8, 1.6), gridspec_kw=dict(width_ratios=[1, 1, 1], wspace=1.0))
+fig = plt.figure(figsize=(4.6, 2.1))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.15, 1], wspace=0.75, hspace=0.7)
+ax = [fig.add_subplot(gs[:, 0]), fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])]
 
 # (a) practical families: the disks for reference, octagons, Bresenham, and the best chain (Table 2 has all)
 a = ax[0]
@@ -55,12 +57,11 @@ a.semilogx(rr, up, color="0.3", lw=0.6, ls="--")
 a.axhline(lo, color="0.3", lw=0.6, ls=":")
 a.semilogx(rho[k], eps[k] * m * m / rho[k], color="C1", lw=0.8)
 a.text(3000, 0.205, "upper bound (Thm. 2)", fontsize=6, ha="right", va="bottom")
-a.text(3000, lo - 0.004, "lower bound (Cor. 1)", fontsize=6, ha="right", va="top")
+a.text(3000, lo - 0.006, "lower bound (Cor. 1)", fontsize=6, ha="right", va="top")
 a.text(3000, 0.07, "chain, $m=2$", color="k", fontsize=6, ha="right", va="bottom")
 a.set_xlim(5, 3000)
-a.set_ylim(0, 0.3)
-a.set_yticks([0, 1 / 18, 1 / 8, 0.25], ["0", "1/18", "1/8", "1/4"])
-a.set_xlabel(r"radius $\rho$")
+a.set_ylim(-0.035, 0.3)
+a.set_yticks([1 / 18, 1 / 8, 0.25], ["1/18", "1/8", "1/4"])
 a.set_ylabel(r"$\varepsilon\,m^2/\rho$")
 a.set_title("(b) Theorem 2 chain")
 norm = (eps[k] * m * m / rho[k])[rho[k] > 1000]
